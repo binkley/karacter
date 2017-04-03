@@ -169,7 +169,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <includes>
-                        <include>**/*Test</include>
+                        <include>**/*Test.kt</include>
                     </includes>
                 </configuration>
                 <dependencies>
@@ -191,7 +191,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <includes>
-                        <include>**/*Spec</include>
+                        <include>**/*Spec.kt</include>
                     </includes>
                 </configuration>
                 <dependencies>
