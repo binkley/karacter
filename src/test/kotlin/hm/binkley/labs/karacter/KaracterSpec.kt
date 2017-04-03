@@ -1,90 +1,61 @@
 package hm.binkley.labs.karacter
 
+import hm.binkley.labs.karacter.Karacter.Companion.makeKaracter
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 
-object KaracterSpek : Spek({
-    describe("A new character") {
-        var karacter = Karacter()
+object KaracterSpec : Spek({
+    describe("A new character and edit pad") {
+        val (editpad, karacter) = makeKaracter()
 
-        it("should be a map") {
-            // assertTrue(karacter is Map<String, Any>)
+        it("should have a map edit pad") {
+             assertTrue(editpad is Map<String, Any>)
         }
 
-        it("should contain nothing") {
+        it("should have nothing in the character") {
             assertTrue(karacter.isEmpty())
         }
 
-        it("should return null for a new key") {
-            assertEquals(null, karacter["foo"])
+        it("should have nothing in the edit pad") {
+            assertTrue(editpad.isEmpty())
         }
     }
 
-    describe("A character with data") {
-        val karacter = Karacter()
+    describe("A character with edit pad changes") {
+        val (editpad, karacter) = makeKaracter()
 
-        beforeGroup { karacter["foo"] = "bar" }
+        beforeGroup { editpad["foo"] = "bar" }
 
-        it("should have size one") {
-            assertEquals(1, karacter.size())
+        it("should have nothing in the character") {
+            assertTrue(karacter.isEmpty())
         }
 
-        it("should have one key") {
-            assertEquals(setOf("foo"), karacter.keys())
-        }
-
-        it("should have a value for a known key") {
-            assertEquals("bar", karacter["foo"])
-        }
-
-        it("should return old value for a known key") {
-            assertEquals("bar", karacter.set("foo", "baz"))
-        }
-
-        it("should replace a value for a known key") {
-            karacter["foo"] = "baz"
-            assertEquals("baz", karacter["foo"])
-        }
-
-        it("should know one value for a replaced known key") {
-            karacter["foo"] = "baz"
-            assertEquals(listOf("baz"), karacter.values("foo"))
+        it("should have one thing in the edit pad") {
+            assertEquals(1, editpad.size)
         }
     }
 
-    describe("A committed character") {
-        val karacter = Karacter()
+    describe("A character with a committed edit pad") {
+        var (editpad, karacter) = makeKaracter()
 
         beforeGroup {
-            karacter["foo"] = "bar"
-            karacter.commit()
+            editpad["foo"] = "bar"
+            editpad = editpad.commit()
         }
 
-        beforeEachTest { karacter.clear() }
-
-        it("should have size one") {
-            assertEquals(1, karacter.size())
+        it("should have one thing in the character") {
+            assertEquals(1, karacter.size)
         }
 
-        it("should have one key") {
-            assertEquals(setOf("foo"), karacter.keys())
+        it("should have nothing in the edit pad") {
+            assertTrue(editpad.isEmpty())
         }
 
-        it("should have a value for a known key") {
-            assertEquals("bar", karacter["foo"])
-        }
-
-        it("should replace a value for a known key") {
-            karacter["foo"] = "baz"
-            assertEquals("baz", karacter["foo"])
-        }
-
-        it("should know all values for a known key in most-recent order") {
-            karacter["foo"] = "baz"
-            assertEquals(listOf("baz", "bar"), karacter.values("foo"))
+        it("should know all values for a key in the character") {
+            assertEquals(listOf("bar"), karacter.values("foo"))
         }
     }
 })
