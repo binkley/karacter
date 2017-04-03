@@ -191,7 +191,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <includes>
-                        <include>**/*Spek</include>
+                        <include>**/*Spec</include>
                     </includes>
                 </configuration>
                 <dependencies>

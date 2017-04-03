@@ -22,10 +22,33 @@ class KaracterSpek : Spek({
     describe("A character with data") {
         val karacter = Karacter()
 
-        beforeGroup { karacter["foo"] = 3 }
+        beforeGroup { karacter["foo"] = "bar" }
 
         it("should have a value for a known key") {
-            assertEquals(karacter["foo"], 3)
+            assertEquals(karacter["foo"], "bar")
+        }
+
+        it("should replace a value for a known key") {
+            karacter["foo"] = "baz"
+            assertEquals(karacter["foo"], "baz")
+        }
+    }
+
+    describe("A committed character") {
+        val karacter = Karacter()
+
+        beforeGroup {
+            karacter["foo"] = "bar"
+            karacter.commit()
+        }
+
+        it("should have a value for a known key") {
+            assertEquals(karacter["foo"], "bar")
+        }
+
+        it("should replace a value for a known key") {
+            karacter["foo"] = "baz"
+            assertEquals(karacter["foo"], "baz")
         }
     }
 })

@@ -8,4 +8,5 @@ class Karacter
     override val entries: MutableSet<MutableEntry<String, Any>> = mutableSetOf()
 
     override fun put(key: String, value: Any): Any? = layer.put(key, value)
+    fun commit() = Unit
 }
