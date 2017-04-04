@@ -1,26 +1,29 @@
 package hm.binkley.labs.karacter
 
 import hm.binkley.labs.karacter.Karacter.Companion.makeKaracter
+import org.amshove.kluent.`should be empty`
+import org.amshove.kluent.`should be instance of`
+import org.amshove.kluent.`should be`
+import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should have key`
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 
 object KaracterSpec : Spek({
     describe("A new character and edit pad") {
         val (editpad, karacter) = makeKaracter()
 
         it("should have a map edit pad") {
-            assertTrue(editpad is Map<String, Any>)
+            editpad `should be instance of` Map::class
         }
 
         it("should have nothing in the character") {
-            assertTrue(karacter.isEmpty())
+            karacter.`should be empty`()
         }
 
         it("should have nothing in the edit pad") {
-            assertTrue(editpad.isEmpty())
+            editpad.`should be empty`()
         }
     }
 
@@ -30,15 +33,15 @@ object KaracterSpec : Spek({
         beforeGroup { editpad["foo"] = "bar" }
 
         it("should have nothing in the character") {
-            assertTrue(karacter.isEmpty())
+            karacter.`should be empty`()
         }
 
         it("should have one thing in the edit pad") {
-            assertEquals(1, editpad.size)
+            editpad.size `should be` 1
         }
 
         it("should have right thing in the edit pad") {
-            assertTrue(editpad.containsKey("foo"))
+            editpad `should have key` "foo"
         }
     }
 
@@ -53,24 +56,24 @@ object KaracterSpec : Spek({
         }
 
         it("should have one thing in the character") {
-            assertEquals(1, karacter.size)
+            karacter.size `should be` 1
         }
 
         it("should have right thing in the character") {
-            assertTrue(karacter.containsKey("foo"))
+            karacter `should have key` "foo"
         }
 
         it("should have nothing in the edit pad") {
-            assertTrue(editpad.isEmpty())
+            editpad.`should be empty`()
         }
 
         it("should know all values for a key in the character") {
-            assertEquals(listOf("baz", "bar"), karacter.values<String>("foo"))
+            karacter.values<String>("foo") `should equal` listOf("baz", "bar")
         }
     }
 
     describe("A view of a character with mixed changes") {
-        var (editpad, karacter) = makeKaracter()
+        var (editpad, _) = makeKaracter()
 
         beforeGroup {
             editpad["foo"] = "bar"
@@ -79,7 +82,7 @@ object KaracterSpec : Spek({
         }
 
         it("should have a view as if committed") {
-            assertEquals("baz", editpad.whatIf()["foo"])
+            editpad.whatIf()["foo"] `should equal` "baz"
         }
     }
 
@@ -94,11 +97,11 @@ object KaracterSpec : Spek({
         }
 
         it("should have all values in character in reverse insert order") {
-            assertEquals(listOf("baz", "bar"), karacter.values<String>("foo"))
+            karacter.values<String>("foo") `should equal` listOf("baz", "bar")
         }
 
         it("should have most recent value in character") {
-            assertEquals("baz", karacter["foo"])
+            karacter["foo"] `should equal` "baz"
         }
     }
 
@@ -116,11 +119,11 @@ object KaracterSpec : Spek({
         }
 
         it("should have all values in character in reverse insert order") {
-            assertEquals(listOf(4, 3), karacter.values<Int>("foo"))
+            karacter.values<Int>("foo") `should equal` listOf(4, 3)
         }
 
         it("should have summed value in character") {
-            assertEquals(7, karacter["foo"])
+            karacter["foo"] `should be` 7
         }
     }
 })
