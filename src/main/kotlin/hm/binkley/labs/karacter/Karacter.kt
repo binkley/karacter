@@ -1,21 +1,18 @@
 package hm.binkley.labs.karacter
 
-class Karacter(private val cache: MutableMap<String, Any> = mutableMapOf())
+class Karacter(private val cache: MutableMap<String, Any> = mutableMapOf(),
+               private val layers: MutableList<Map<String, Any>> = mutableListOf(),
+               private val rules: MutableMap<String, (Karacter, String) -> Any> = mutableMapOf())
     : Map<String, Any> by cache {
-    private val layers = mutableListOf<Map<String, Any>>()
-    private val rules = mutableMapOf<String, (Karacter, String) -> Any>()
-
     private fun updateCache() {
+        val keys = cache.keys + layers[0].keys
         cache.clear()
-        layers.reversed().
-                forEach { layer ->
-                    layer.keys.forEach { key ->
-                        if (rules.containsKey(key))
-                            cache[key] = rules[key]?.invoke(this, key) as Any
-                        else
-                            cache[key] = layer[key] as Any
-                    }
-                }
+        keys.forEach { key: String ->
+            if (rules.containsKey(key))
+                cache[key] = rules[key]?.invoke(this, key) as Any
+            else
+                cache[key] = values<Any>(key).first()
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -23,9 +20,8 @@ class Karacter(private val cache: MutableMap<String, Any> = mutableMapOf())
             filter { it.containsKey(key) }.
             map { it[key] as T }
 
-    fun rule(key: String, rule: (Karacter, String) -> Any): Karacter {
+    fun rule(key: String, rule: (Karacter, String) -> Any) {
         rules[key] = rule
-        return this
     }
 
     inner class EditPad : MutableMap<String, Any> by HashMap<String, Any>() {
@@ -33,6 +29,16 @@ class Karacter(private val cache: MutableMap<String, Any> = mutableMapOf())
             layers.add(0, this)
             updateCache()
             return EditPad()
+        }
+
+        fun whatIf(): Karacter {
+            val view = Karacter(HashMap(cache), ArrayList(layers),
+                    HashMap(rules))
+            with(view.EditPad()) {
+                putAll(this@EditPad)
+                commit()
+            }
+            return view
         }
     }
 
@@ -46,5 +52,4 @@ class Karacter(private val cache: MutableMap<String, Any> = mutableMapOf())
             return MadeKaracter(editpad, karacter)
         }
     }
-
 }

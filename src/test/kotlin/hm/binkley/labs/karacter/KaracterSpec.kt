@@ -69,6 +69,20 @@ object KaracterSpec : Spek({
         }
     }
 
+    describe("A view of a character with mixed changes") {
+        var (editpad, karacter) = makeKaracter()
+
+        beforeGroup {
+            editpad["foo"] = "bar"
+            editpad = editpad.commit()
+            editpad["foo"] = "baz"
+        }
+
+        it("should have a view as if committed") {
+            assertEquals("baz", editpad.whatIf()["foo"])
+        }
+    }
+
     describe("A character with several string values") {
         var (editpad, karacter) = makeKaracter()
 
