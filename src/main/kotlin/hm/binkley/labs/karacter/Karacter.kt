@@ -12,9 +12,14 @@ class Karacter private constructor(
             if (rules.containsKey(key))
                 cache[key] = rules[key]?.invoke(this, key) as Any
             else
-                cache[key] = values<Any>(key).first()
+                cache[key] = layers.
+                        filter { it.containsKey(key) }.
+                        first()[key] as Any
         }
     }
+
+    private fun copy() = Karacter(HashMap(cache), ArrayList(layers),
+            HashMap(rules))
 
     @Suppress("UNCHECKED_CAST")
     fun <T> values(key: String): List<T> = layers.
@@ -26,33 +31,28 @@ class Karacter private constructor(
     }
 
     inner class EditPad : MutableMap<String, Any> by HashMap<String, Any>() {
-        fun commit(): EditPad {
+        fun keep(): EditPad {
             layers.add(0, this)
             updateCache()
             return EditPad()
         }
 
+        fun discard() = EditPad()
+
         fun whatIf(): Karacter {
-            val view = Karacter(HashMap(cache), ArrayList(layers),
-                    HashMap(rules))
+            val view = this@Karacter.copy()
             with(view.EditPad()) {
                 putAll(this@EditPad)
-                commit()
+                keep()
             }
             return view
         }
     }
 
     companion object {
-        class MadeKaracter(val editpad: EditPad, val karacter: Karacter) {
-            operator fun component1() = editpad
-            operator fun component2() = karacter
-        }
-
-        fun makeKaracter(): MadeKaracter {
-            val karacter = Karacter()
-            val editpad = karacter.EditPad()
-            return MadeKaracter(editpad, karacter)
+        fun newKaracter(): Pair<EditPad, Karacter> {
+            val karacter: Karacter = Karacter()
+            return karacter.EditPad() to karacter
         }
     }
 }
