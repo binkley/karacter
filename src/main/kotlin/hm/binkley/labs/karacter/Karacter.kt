@@ -1,15 +1,9 @@
 package hm.binkley.labs.karacter
 
-class Karacter {
-    interface Rule<T> {
-        fun apply(values: List<T>): T
-    }
-
+class Karacter(private val cache: MutableMap<String, Any> = mutableMapOf())
+    : Map<String, Any> by cache {
     private val layers = mutableListOf<Map<String, Any>>()
-    private val cache: MutableMap<String, Any> = mutableMapOf()
-    private val rules = mutableMapOf<String, (List<Any>) -> Any>()
-
-    operator fun get(key: String): Any? = cache[key]
+    private val rules = mutableMapOf<String, (Karacter, String) -> Any>()
 
     private fun updateCache() {
         cache.clear()
@@ -17,33 +11,24 @@ class Karacter {
                 forEach { layer ->
                     layer.keys.forEach { key ->
                         if (rules.containsKey(key))
-                            cache[key] = rules[key]?.invoke(values(key)) as Any
+                            cache[key] = rules[key]?.invoke(this, key) as Any
                         else
                             cache[key] = layer[key] as Any
                     }
                 }
     }
 
-    val size: Int
-        get() = keys.size
-
-    fun isEmpty() = 0 == size
-
-    val keys: Set<String>
-        get() = layers.map { it.keys }.flatten().toSet()
-
-    fun containsKey(key: String) = keys.contains(key)
-
-    fun values(key: String): List<Any> = layers.
+    @Suppress("UNCHECKED_CAST")
+    fun <T> values(key: String): List<T> = layers.
             filter { it.containsKey(key) }.
-            map { it[key] as Any }
+            map { it[key] as T }
 
-    fun <T> rule(key: String, rule: (List<T>) -> T): Karacter {
-        rules[key] = rule as ((List<Any>) -> Any)
+    fun rule(key: String, rule: (Karacter, String) -> Any): Karacter {
+        rules[key] = rule
         return this
     }
 
-    inner class EditPad : HashMap<String, Any>() {
+    inner class EditPad : MutableMap<String, Any> by HashMap<String, Any>() {
         fun commit(): EditPad {
             layers.add(0, this)
             updateCache()

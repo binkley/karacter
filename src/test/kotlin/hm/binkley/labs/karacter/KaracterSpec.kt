@@ -65,7 +65,7 @@ object KaracterSpec : Spek({
         }
 
         it("should know all values for a key in the character") {
-            assertEquals(listOf("baz", "bar"), karacter.values("foo"))
+            assertEquals(listOf("baz", "bar"), karacter.values<String>("foo"))
         }
     }
 
@@ -80,7 +80,7 @@ object KaracterSpec : Spek({
         }
 
         it("should have all values in character in reverse insert order") {
-            assertEquals(listOf("baz", "bar"), karacter.values("foo"))
+            assertEquals(listOf("baz", "bar"), karacter.values<String>("foo"))
         }
 
         it("should have most recent value in character") {
@@ -92,7 +92,9 @@ object KaracterSpec : Spek({
         var (editpad, karacter) = makeKaracter()
 
         beforeGroup {
-            karacter.rule<Int>("foo") { it.sum() }
+            karacter.rule("foo") { karacter, key ->
+                karacter.values<Int>(key).sum()
+            }
             editpad["foo"] = 3
             editpad = editpad.commit()
             editpad["foo"] = 4
@@ -100,7 +102,7 @@ object KaracterSpec : Spek({
         }
 
         it("should have all values in character in reverse insert order") {
-            assertEquals(listOf(4, 3), karacter.values("foo"))
+            assertEquals(listOf(4, 3), karacter.values<Int>("foo"))
         }
 
         it("should have summed value in character") {
