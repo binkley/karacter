@@ -1,8 +1,9 @@
 package hm.binkley.labs.karacter
 
-class Karacter(private val cache: MutableMap<String, Any> = mutableMapOf(),
-               private val layers: MutableList<Map<String, Any>> = mutableListOf(),
-               private val rules: MutableMap<String, (Karacter, String) -> Any> = mutableMapOf())
+class Karacter private constructor(
+        private val cache: MutableMap<String, Any> = mutableMapOf(),
+        private val layers: MutableList<Map<String, Any>> = mutableListOf(),
+        private val rules: MutableMap<String, (Karacter, String) -> Any> = mutableMapOf())
     : Map<String, Any> by cache {
     private fun updateCache() {
         val keys = cache.keys + layers[0].keys
@@ -43,8 +44,10 @@ class Karacter(private val cache: MutableMap<String, Any> = mutableMapOf(),
     }
 
     companion object {
-        data class MadeKaracter(val editpad: EditPad,
-                                val karacter: Karacter)
+        class MadeKaracter(val editpad: EditPad, val karacter: Karacter) {
+            operator fun component1() = editpad
+            operator fun component2() = karacter
+        }
 
         fun makeKaracter(): MadeKaracter {
             val karacter = Karacter()

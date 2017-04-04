@@ -21,6 +21,8 @@
     <properties>
         <!-- @formatter:off -->
         <generateBackupPoms>false</generateBackupPoms>
+        <jacoco.coverage>0.70</jacoco.coverage>
+        <jacoco.version>0.7.9</jacoco.version>
         <java.charset>UTF-8</java.charset>
         <java.version>1.8</java.version>
         <junit.jupiter.version>5.0.0-M4</junit.jupiter.version>
@@ -189,41 +191,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <excludes>
-                        <exclude>**/*Spec.*</exclude>
-                    </excludes>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider
-                        </artifactId>
-                        <version>${junit.platform.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>${junit.jupiter.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
                     <failIfNoTests>true</failIfNoTests>
                     <includes>
                         <include>**/*Spec.*</include>
                     </includes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>org.junit.platform</groupId>
@@ -246,7 +218,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
+                <version>${jacoco.version}</version>
                 <executions>
                     <execution>
                         <id>jacoco-prepare-agent</id>
@@ -269,7 +241,7 @@
                                 <limit>
                                     <counter>INSTRUCTION</counter>
                                     <value>COVEREDRATIO</value>
-                                    <minimum>0.60</minimum>
+                                    <minimum>${jacoco.coverage}</minimum>
                                 </limit>
                                 <limit>
                                     <counter>CLASS</counter>
