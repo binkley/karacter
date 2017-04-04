@@ -1,39 +1,52 @@
 package hm.binkley.labs.karacter
 
 class Karacter {
+    interface Rule<T> {
+        fun apply(values: List<T>): T
+    }
+
     private val layers = mutableListOf<Map<String, Any>>()
     private val cache: MutableMap<String, Any> = mutableMapOf()
-
-    init {
-        layers.add(mutableMapOf())
-    }
+    private val rules = mutableMapOf<String, (List<Any>) -> Any>()
 
     operator fun get(key: String): Any? = cache[key]
 
-    private fun updateCache(key: String) {
-        layers.
-                reversed().
-                filter { it.containsKey(key) }.
-                forEach { cache[key] = it[key] as Any }
+    private fun updateCache() {
+        cache.clear()
+        layers.reversed().
+                forEach { layer ->
+                    layer.keys.forEach { key ->
+                        if (rules.containsKey(key))
+                            cache[key] = rules[key]?.invoke(values(key)) as Any
+                        else
+                            cache[key] = layer[key] as Any
+                    }
+                }
     }
 
-    var size: Int = 0
-        get() = layers.map { it.size }.sum()
+    val size: Int
+        get() = keys.size
 
     fun isEmpty() = 0 == size
 
-    fun keys(): Set<String> = layers.map { it.keys }.flatten().toSet()
-    fun containsKey(key: String) = keys().contains(key)
+    val keys: Set<String>
+        get() = layers.map { it.keys }.flatten().toSet()
 
-    fun values(key: String): List<Any> {
-        return layers.
-                filter { it.containsKey(key) }.
-                map { it[key] as Any }
+    fun containsKey(key: String) = keys.contains(key)
+
+    fun values(key: String): List<Any> = layers.
+            filter { it.containsKey(key) }.
+            map { it[key] as Any }
+
+    fun <T> rule(key: String, rule: (List<T>) -> T): Karacter {
+        rules[key] = rule as ((List<Any>) -> Any)
+        return this
     }
 
     inner class EditPad : HashMap<String, Any>() {
         fun commit(): EditPad {
             layers.add(0, this)
+            updateCache()
             return EditPad()
         }
     }

@@ -12,7 +12,7 @@ object KaracterSpec : Spek({
         val (editpad, karacter) = makeKaracter()
 
         it("should have a map edit pad") {
-             assertTrue(editpad is Map<String, Any>)
+            assertTrue(editpad is Map<String, Any>)
         }
 
         it("should have nothing in the character") {
@@ -36,13 +36,19 @@ object KaracterSpec : Spek({
         it("should have one thing in the edit pad") {
             assertEquals(1, editpad.size)
         }
+
+        it("should have right thing in the edit pad") {
+            assertTrue(editpad.containsKey("foo"))
+        }
     }
 
-    describe("A character with a committed edit pad") {
+    describe("A character with a committed edit pad changes") {
         var (editpad, karacter) = makeKaracter()
 
         beforeGroup {
             editpad["foo"] = "bar"
+            editpad = editpad.commit()
+            editpad["foo"] = "baz"
             editpad = editpad.commit()
         }
 
@@ -50,12 +56,55 @@ object KaracterSpec : Spek({
             assertEquals(1, karacter.size)
         }
 
+        it("should have right thing in the character") {
+            assertTrue(karacter.containsKey("foo"))
+        }
+
         it("should have nothing in the edit pad") {
             assertTrue(editpad.isEmpty())
         }
 
         it("should know all values for a key in the character") {
-            assertEquals(listOf("bar"), karacter.values("foo"))
+            assertEquals(listOf("baz", "bar"), karacter.values("foo"))
+        }
+    }
+
+    describe("A character with several string values") {
+        var (editpad, karacter) = makeKaracter()
+
+        beforeGroup {
+            editpad["foo"] = "bar"
+            editpad = editpad.commit()
+            editpad["foo"] = "baz"
+            editpad = editpad.commit()
+        }
+
+        it("should have all values in character in reverse insert order") {
+            assertEquals(listOf("baz", "bar"), karacter.values("foo"))
+        }
+
+        it("should have most recent value in character") {
+            assertEquals("baz", karacter["foo"])
+        }
+    }
+
+    describe("A character with several integer values") {
+        var (editpad, karacter) = makeKaracter()
+
+        beforeGroup {
+            karacter.rule<Int>("foo") { it.sum() }
+            editpad["foo"] = 3
+            editpad = editpad.commit()
+            editpad["foo"] = 4
+            editpad = editpad.commit()
+        }
+
+        it("should have all values in character in reverse insert order") {
+            assertEquals(listOf(4, 3), karacter.values("foo"))
+        }
+
+        it("should have summed value in character") {
+            assertEquals(7, karacter["foo"])
         }
     }
 })
