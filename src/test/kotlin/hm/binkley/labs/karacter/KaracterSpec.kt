@@ -1,5 +1,6 @@
 package hm.binkley.labs.karacter
 
+import hm.binkley.labs.karacter.Karacter.Companion.mostRecent
 import hm.binkley.labs.karacter.Karacter.Companion.newKaracter
 import hm.binkley.labs.karacter.Karacter.EditPad
 import hm.binkley.labs.karacter.Karacter.ScratchPad
@@ -79,6 +80,22 @@ object KaracterSpec : Spek({
         }
     }
 
+    describe("A new character with a string key using default rule") {
+        val (_, karacter) = newKaracter(::ScratchPad)
+
+        beforeGroup {
+            karacter.rule("foo", mostRecent(""))
+        }
+
+        it("should have no values for key") {
+            karacter.values<Int>("foo") `should equal` listOf()
+        }
+
+        it("should have summed value to zero") {
+            karacter `should equal` mapOf("foo" to "")
+        }
+    }
+
     describe("A character with several string values") {
         var (editpad, karacter) = newKaracter(::ScratchPad)
 
@@ -96,9 +113,35 @@ object KaracterSpec : Spek({
         it("should have most recent value in character") {
             karacter `should equal` mapOf("foo" to "baz")
         }
+
+        it("should diplay nicely") {
+            karacter.toString() `should equal` """
+All (2): {foo=baz}
+2: Scratch {foo=baz}
+1: Scratch {foo=bar}
+""".trim()
+        }
     }
 
-    describe("A character with several integer values") {
+    describe("A new character with an integer key") {
+        val (_, karacter) = newKaracter(::ScratchPad)
+
+        beforeGroup {
+            karacter.rule("foo") { karacter, key ->
+                karacter.values<Int>(key).sum()
+            }
+        }
+
+        it("should have no values for key") {
+            karacter.values<Int>("foo") `should equal` listOf()
+        }
+
+        it("should have summed value to zero") {
+            karacter `should equal` mapOf("foo" to 0)
+        }
+    }
+
+    describe("A character with several integer values using a sum rule") {
         var (editpad, karacter) = newKaracter(::ScratchPad)
 
         beforeGroup {
@@ -121,7 +164,8 @@ object KaracterSpec : Spek({
     }
 
     describe("A custom edit pad") {
-        class TestPad(karacter: Karacter) : EditPad<TestPad>(karacter) {
+        class TestPad(karacter: Karacter)
+            : EditPad<TestPad>(karacter, "Test") {
             val foo = 82
         }
 
