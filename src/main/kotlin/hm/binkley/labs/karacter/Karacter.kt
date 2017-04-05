@@ -6,7 +6,7 @@ class Karacter private constructor(
         private val rules: MutableMap<String, (Karacter, String) -> Any> = mutableMapOf())
     : Map<String, Any> by cache {
     /** @todo Not concurrency-safe */
-    private fun updateCache(layer: EditPad) {
+    private fun updateCache(layer: EditPad<*>) {
         val keys = cache.keys + layer.keys
         layers.add(0, layer)
         // cache.clear() - TODO: Is Karacter only additive, no keys deleted?
@@ -34,26 +34,28 @@ class Karacter private constructor(
         rules[key] = rule
     }
 
-    inner class EditPad : MutableMap<String, Any> by HashMap<String, Any>() {
-        fun keep(): EditPad {
-            updateCache(this)
-            return EditPad()
+    class ScratchPad(karacter: Karacter) : EditPad<ScratchPad>(karacter)
+
+    open class EditPad<T : EditPad<T>> protected constructor(
+            protected val karacter: Karacter)
+        : MutableMap<String, Any> by HashMap<String, Any>() {
+        fun <U : EditPad<U>> keep(next: (Karacter) -> U): U {
+            karacter.updateCache(this)
+            return next(karacter)
         }
 
-        fun discard() = EditPad()
+        fun <U : EditPad<U>> discard(next: (Karacter) -> U) = next(karacter)
 
-        fun whatIf() = copy().apply {
-            EditPad().apply {
-                putAll(this@EditPad)
-                keep()
-            }
+        fun whatIf(): Karacter = karacter.copy().apply {
+            updateCache(this@EditPad)
         }
     }
 
     companion object {
-        fun newKaracter(): Pair<EditPad, Karacter> {
+        fun <T : EditPad<T>> newKaracter(
+                next: (Karacter) -> T): Pair<T, Karacter> {
             val karacter: Karacter = Karacter()
-            return karacter.EditPad() to karacter
+            return next(karacter) to karacter
         }
     }
 }
