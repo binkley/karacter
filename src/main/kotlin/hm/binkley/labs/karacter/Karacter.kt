@@ -1,36 +1,38 @@
 package hm.binkley.labs.karacter
 
+typealias Rule = (Karacter, String) -> Any
+// typealias PadMaker<T : Karacter.EditPad<T>> = (Karacter) -> T
+
+object InternalBug : IllegalStateException("ILLEGAL BUG")
+
 class Karacter private constructor(
         private val cache: MutableMap<String, Any> = mutableMapOf(),
-        private val layers: MutableList<Map<String, Any>> = mutableListOf(),
-        private val rules: MutableMap<String, (Karacter, String) -> Any> = mutableMapOf())
+        private val layers: MutableList<EditPad<*>> = mutableListOf(),
+        private val rules: MutableMap<String, Rule> = mutableMapOf())
     : Map<String, Any> by cache {
     /** @todo Not concurrency-safe */
-    private fun updateCache(layer: EditPad<*>) {
+    private fun updateCache(layer: EditPad<*>) = apply {
         val keys = cache.keys + layer.keys
         layers.add(0, layer)
         // cache.clear() - TODO: Is Karacter only additive, no keys deleted?
         keys.forEach { cache[it] = value(it) }
     }
 
-    private fun value(key: String): Any {
-        if (key in rules)
-            return rules[key]?.invoke(this, key) as Any
-        else
-            return layers.
-                    filter { key in it }.
-                    first()[key] as Any
-    }
+    private fun value(key: String) = rules[key]?.invoke(this, key)
+            ?: mostRecent(key)
 
-    private fun copy() = Karacter(HashMap(cache), ArrayList(layers),
-            HashMap(rules))
+    private fun mostRecent(key: String) = layers(key).first()[key]
+            ?: throw InternalBug
+
+    private fun layers(key: String) = layers.filter { key in it }
+
+    private fun copy() = Karacter(cache.toMutableMap(),
+            layers.toMutableList(), rules.toMutableMap())
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> values(key: String): List<T> = layers.
-            filter { key in it }.
-            map { it[key] as T }
+    fun <T> values(key: String): List<T> = layers(key).map { it[key] as T }
 
-    fun rule(key: String, rule: (Karacter, String) -> Any) {
+    fun rule(key: String, rule: Rule) {
         rules[key] = rule
     }
 
@@ -39,16 +41,12 @@ class Karacter private constructor(
     open class EditPad<T : EditPad<T>> protected constructor(
             protected val karacter: Karacter)
         : MutableMap<String, Any> by HashMap<String, Any>() {
-        fun <U : EditPad<U>> keep(next: (Karacter) -> U): U {
-            karacter.updateCache(this)
-            return next(karacter)
-        }
+        fun <U : EditPad<U>> keep(next: (Karacter) -> U): U
+                = next(karacter.updateCache(this))
 
         fun <U : EditPad<U>> discard(next: (Karacter) -> U) = next(karacter)
 
-        fun whatIf(): Karacter = karacter.copy().apply {
-            updateCache(this@EditPad)
-        }
+        fun whatIf(): Karacter = karacter.copy().updateCache(this@EditPad)
     }
 
     companion object {

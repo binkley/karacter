@@ -122,16 +122,13 @@ object KaracterSpec : Spek({
 
     describe("A custom edit pad") {
         class TestPad(karacter: Karacter) : EditPad<TestPad>(karacter) {
-            init {
-                put("foo", "bar")
-            }
+            val foo = 82
         }
 
-        val (editpad, karacter) = newKaracter(::TestPad)
-        beforeGroup { editpad.keep(::ScratchPad) }
+        val (editpad, _) = newKaracter(::TestPad)
 
         it("should behave like a vanilla edit pad") {
-            karacter `should equal` mapOf("foo" to "bar")
+            editpad.foo `should equal` 82
         }
     }
 })
