@@ -5,17 +5,21 @@ class Karacter private constructor(
         private val layers: MutableList<Map<String, Any>> = mutableListOf(),
         private val rules: MutableMap<String, (Karacter, String) -> Any> = mutableMapOf())
     : Map<String, Any> by cache {
-    private fun updateCache() {
-        val keys = cache.keys + layers[0].keys
-        cache.clear()
-        keys.forEach { key: String ->
-            if (rules.containsKey(key))
-                cache[key] = rules[key]?.invoke(this, key) as Any
-            else
-                cache[key] = layers.
-                        filter { it.containsKey(key) }.
-                        first()[key] as Any
-        }
+    /** @todo Not concurrency-safe */
+    private fun updateCache(layer: EditPad) {
+        val keys = cache.keys + layer.keys
+        layers.add(0, layer)
+        // cache.clear() - TODO: Is Karacter only additive, no keys deleted?
+        keys.forEach { cache[it] = value(it) }
+    }
+
+    private fun value(key: String): Any {
+        if (key in rules)
+            return rules[key]?.invoke(this, key) as Any
+        else
+            return layers.
+                    filter { key in it }.
+                    first()[key] as Any
     }
 
     private fun copy() = Karacter(HashMap(cache), ArrayList(layers),
@@ -23,7 +27,7 @@ class Karacter private constructor(
 
     @Suppress("UNCHECKED_CAST")
     fun <T> values(key: String): List<T> = layers.
-            filter { it.containsKey(key) }.
+            filter { key in it }.
             map { it[key] as T }
 
     fun rule(key: String, rule: (Karacter, String) -> Any) {
@@ -32,20 +36,17 @@ class Karacter private constructor(
 
     inner class EditPad : MutableMap<String, Any> by HashMap<String, Any>() {
         fun keep(): EditPad {
-            layers.add(0, this)
-            updateCache()
+            updateCache(this)
             return EditPad()
         }
 
         fun discard() = EditPad()
 
-        fun whatIf(): Karacter {
-            val view = this@Karacter.copy()
-            with(view.EditPad()) {
+        fun whatIf() = copy().apply {
+            EditPad().apply {
                 putAll(this@EditPad)
                 keep()
             }
-            return view
         }
     }
 
