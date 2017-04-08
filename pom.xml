@@ -28,7 +28,7 @@
         <junit.jupiter.version>5.0.0-M4</junit.jupiter.version>
         <junit.platform.version>1.0.0-M3</junit.platform.version>
         <kluent.version>1.18</kluent.version>
-        <kotlin.version>1.1.1</kotlin.version>
+        <kotlin.version>1.1.2-eap-44</kotlin.version>
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
         <maven-dependency-plugin.version>3.0.0</maven-dependency-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
@@ -48,13 +48,34 @@
             <url>http://jcenter.bintray.com</url>
             <snapshots>
                 <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>kotlin-dev</id>
+            <url>https://dl.bintray.com/kotlin/kotlin-dev/</url>
+            <snapshots>
+                <enabled>true</enabled>
             </snapshots>
             <releases>
                 <enabled>true</enabled>
             </releases>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>kotlin-dev</id>
+            <url>https://dl.bintray.com/kotlin/kotlin-dev/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencies>
         <dependency>
