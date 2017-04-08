@@ -80,10 +80,11 @@ object KaracterSpec : Spek({
     }
 
     describe("A new character with a string key using default rule") {
-        val (_, karacter) = newKaracter(::ScratchPad)
+        var (editpad, karacter) = newKaracter(::ScratchPad)
 
         beforeGroup {
-            karacter.rule("foo", mostRecent(""))
+            editpad["foo"] = mostRecent("")
+            editpad = editpad.keep(::ScratchPad)
         }
 
         it("should have no values for key") {
@@ -123,12 +124,13 @@ All (2): {foo=baz}
     }
 
     describe("A new character with an integer key") {
-        val (_, karacter) = newKaracter(::ScratchPad)
+        val (editpad, karacter) = newKaracter(::ScratchPad)
 
         beforeGroup {
-            karacter.rule("foo") { karacter, key ->
+            editpad["foo"] = { karacter: Karacter, key: String ->
                 karacter.values<Int>(key).sum()
             }
+            editpad.keep(::ScratchPad)
         }
 
         it("should have no values for key") {
@@ -144,9 +146,10 @@ All (2): {foo=baz}
         var (editpad, karacter) = newKaracter(::ScratchPad)
 
         beforeGroup {
-            karacter.rule("foo") { karacter, key ->
+            editpad["foo"] = { karacter: Karacter, key: String ->
                 karacter.values<Int>(key).sum()
             }
+            editpad = editpad.keep(::ScratchPad)
             editpad["foo"] = 3
             editpad = editpad.keep(::ScratchPad)
             editpad["foo"] = 4
@@ -172,6 +175,24 @@ All (2): {foo=baz}
 
         it("should behave like a vanilla edit pad") {
             editpad.foo `should equal` 82
+        }
+    }
+
+    describe("A value with several rules") {
+        var (editpad, karacter) = newKaracter(::ScratchPad)
+
+        beforeGroup {
+            editpad["foo"] = { karacter: Karacter, key: String ->
+                if (1 < karacter.rules<Any>(key).size) // Ignore self
+                    throw AssertionError("Earlier rule should be ignored")
+            }
+            editpad = editpad.keep(::ScratchPad)
+            editpad["foo"] = mostRecent("Bob")
+            editpad.keep(::ScratchPad)
+        }
+
+        it("should use the most recent rule") {
+            karacter["foo"] `should equal` "Bob"
         }
     }
 })
