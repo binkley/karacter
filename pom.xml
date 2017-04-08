@@ -102,14 +102,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.spek</groupId>
+            <groupId>hm.binkley.spek</groupId>
             <artifactId>spek-api</artifactId>
             <version>${spek.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <!-- TODO: Remove when IntelliJ groks -->
-            <groupId>org.jetbrains.spek</groupId>
+            <groupId>hm.binkley.spek</groupId>
             <artifactId>spek-junit-platform-engine</artifactId>
             <version>${spek.version}</version>
             <scope>test</scope>
@@ -219,7 +219,7 @@
                         <version>${junit.jupiter.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>org.jetbrains.spek</groupId>
+                        <groupId>hm.binkley.spek</groupId>
                         <artifactId>spek-junit-platform-engine</artifactId>
                         <version>${spek.version}</version>
                     </dependency>
