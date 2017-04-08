@@ -3,7 +3,6 @@ package hm.binkley.labs.karacter
 import hm.binkley.labs.karacter.Karacter.Companion.mostRecent
 import hm.binkley.labs.karacter.Karacter.Companion.newKaracter
 import hm.binkley.labs.karacter.Karacter.EditPad
-import hm.binkley.labs.karacter.Karacter.ScratchPad
 import org.amshove.kluent.`should be empty`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`

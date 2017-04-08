@@ -13,8 +13,9 @@ class Karacter private constructor(
         keys.forEach { cache[it] = value(it) }
     }
 
-    private fun value(key: String) = rules[key]?.invoke(this, key)
-            ?: mostRecent(null)(this, key) as Any
+    private fun value(key: String) = rule(key).invoke(this, key)
+
+    private fun rule(key: String) = rules.getOrDefault(key, mostRecent(this)) // XXX
 
     private fun layers(key: String) = layers.filter { key in it }
 
@@ -34,9 +35,6 @@ class Karacter private constructor(
             map { "${layers.size - it.index}: ${it.value}" }.
             // TODO: Makes spurious newline when there are no layers
             joinToString("\n", "All (${layers.size}): $cache\n")
-
-    class ScratchPad(karacter: Karacter)
-        : EditPad<ScratchPad>(karacter, "Scratch")
 
     abstract class EditPad<T : EditPad<T>> protected constructor(
             protected val karacter: Karacter,
