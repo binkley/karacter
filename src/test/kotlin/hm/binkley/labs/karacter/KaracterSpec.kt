@@ -218,7 +218,27 @@ All (2): {foo=baz}
         it("should use the most recent rule") {
             karacter.rules<String>("foo").
                     map { it.toString() } `should equal`
-                    listOf("Most recent (default Bob)", "Die, die, die")
+                    listOf("[Rule: Most recent (default Bob)]",
+                            "[Rule: Die, die, die]")
+        }
+    }
+
+    describe("Keeping a whole pad") {
+        val (editpad, karacter) = newKaracter(::ScratchPad)
+
+        class Newby(karacter: Karacter) : EditPad<Newby>(karacter, "Newby") {
+            init {
+                this["foo"] = 1
+                this["bar"] = "BAZ"
+            }
+        }
+
+        beforeGroup {
+            editpad.keep(::Newby).keep(::ScratchPad)
+        }
+
+        it("should keep a whole pad") {
+            karacter `should equal` mapOf("foo" to 1, "bar" to "BAZ")
         }
     }
 })

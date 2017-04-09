@@ -2,12 +2,12 @@ package hm.binkley.labs.karacter
 
 class Karacter private constructor(
         private val cache: MutableMap<String, Any> = mutableMapOf(),
-        private val layers: MutableList<EditPad<*>> = mutableListOf())
+        private val pads: MutableList<EditPad<*>> = mutableListOf())
     : Map<String, Any> by cache {
     /** @todo Not concurrency-safe */
-    private fun keep(layer: EditPad<*>) = apply {
-        val keys = cache.keys + layer.keys
-        layers.add(0, layer)
+    private fun keep(pad: EditPad<*>) = apply {
+        val keys = cache.keys + pad.keys
+        pads.add(0, pad)
         // cache.clear() - TODO: Is Karacter only additive, no keys deleted?
         keys.forEach { cache[it] = value(it) }
     }
@@ -19,12 +19,11 @@ class Karacter private constructor(
         karacter.values<T>(key).first()
     }
 
-    private fun rawValues(key: String) = layers.
+    private fun rawValues(key: String) = pads.
             filter { key in it }.
             map { it[key] }
 
-    private fun copy() = Karacter(cache.toMutableMap(),
-            layers.toMutableList())
+    private fun copy() = Karacter(cache.toMutableMap(), pads.toMutableList())
 
     @Suppress("UNCHECKED_CAST")
     fun <T> values(key: String) = rawValues(key).
@@ -36,10 +35,10 @@ class Karacter private constructor(
             filter { it is Rule<*> }.
             map { it as Rule<T> }
 
-    override fun toString() = layers.withIndex().
-            map { "${layers.size - it.index}: ${it.value}" }.
+    override fun toString() = pads.withIndex().
+            map { "${pads.size - it.index}: ${it.value}" }.
             // TODO: Makes spurious newline when there are no values
-            joinToString("\n", "All (${layers.size}): $cache\n")
+            joinToString("\n", "All (${pads.size}): $cache\n")
 
     abstract class EditPad<T : EditPad<T>> protected constructor(
             private val karacter: Karacter,
@@ -59,7 +58,7 @@ class Karacter private constructor(
     class Rule<out T>(private val name: String,
                       private val rule: (Karacter, String) -> T)
         : (Karacter, String) -> T by rule {
-        override fun toString() = name
+        override fun toString() = "[Rule: $name]"
     }
 
     companion object {
