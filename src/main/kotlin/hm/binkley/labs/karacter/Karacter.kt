@@ -36,11 +36,11 @@ class Karacter private constructor(
 
     override fun toString() = layers.withIndex().
             map { "${layers.size - it.index}: ${it.value}" }.
-            // TODO: Makes spurious newline when there are no rawValues
+            // TODO: Makes spurious newline when there are no values
             joinToString("\n", "All (${layers.size}): $cache\n")
 
     abstract class EditPad<T : EditPad<T>> protected constructor(
-            protected val karacter: Karacter,
+            private val karacter: Karacter,
             private val name: String,
             private val cache: MutableMap<String, Any> = mutableMapOf())
         : MutableMap<String, Any> by cache {

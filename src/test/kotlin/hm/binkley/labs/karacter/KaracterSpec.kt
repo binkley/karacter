@@ -65,6 +65,26 @@ object KaracterSpec : Spek({
         }
     }
 
+    describe("A character with a multiple committed edit pad changes") {
+        var (editpad, karacter) = newKaracter(::ScratchPad)
+
+        beforeGroup {
+            editpad["foo"] = "bar"
+            editpad["fruit"] = "apple"
+            editpad = editpad.keep(::ScratchPad)
+        }
+
+        it("should have all things in the character") {
+            karacter.`should equal`(mapOf("foo" to "bar", "fruit" to "apple"))
+        }
+
+        it("should not mix values") {
+            listOf(karacter.values<String>("foo"),
+                    karacter.values<String>("fruit")) `should equal`
+                    listOf(listOf("bar"), listOf("apple"))
+        }
+    }
+
     describe("A view of a character with mixed changes") {
         var (editpad, _) = newKaracter(::ScratchPad)
 
