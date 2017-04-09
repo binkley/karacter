@@ -3,6 +3,7 @@ package hm.binkley.labs.karacter
 import hm.binkley.labs.karacter.Karacter.Companion.mostRecent
 import hm.binkley.labs.karacter.Karacter.Companion.newKaracter
 import hm.binkley.labs.karacter.Karacter.EditPad
+import hm.binkley.labs.karacter.Karacter.Rule
 import org.amshove.kluent.`should be empty`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
@@ -147,7 +148,8 @@ All (2): {foo=baz}
         val (editpad, karacter) = newKaracter(::ScratchPad)
 
         beforeGroup {
-            editpad["foo"] = { karacter: Karacter, key: String ->
+            editpad["foo"] = Rule("Sum all")
+            { karacter: Karacter, key: String ->
                 karacter.values<Int>(key).sum()
             }
             editpad.keep(::ScratchPad)
@@ -166,7 +168,8 @@ All (2): {foo=baz}
         var (editpad, karacter) = newKaracter(::ScratchPad)
 
         beforeGroup {
-            editpad["foo"] = { karacter: Karacter, key: String ->
+            editpad["foo"] = Rule("Sum all")
+            { karacter: Karacter, key: String ->
                 karacter.values<Int>(key).sum()
             }
             editpad = editpad.keep(::ScratchPad)
@@ -202,7 +205,8 @@ All (2): {foo=baz}
         var (editpad, karacter) = newKaracter(::ScratchPad)
 
         beforeGroup {
-            editpad["foo"] = { karacter: Karacter, key: String ->
+            editpad["foo"] = Rule("Die, die, die")
+            { karacter: Karacter, key: String ->
                 if (1 < karacter.rules<Any>(key).size) // Ignore self
                     throw AssertionError("Earlier rule should be ignored")
             }
@@ -212,7 +216,9 @@ All (2): {foo=baz}
         }
 
         it("should use the most recent rule") {
-            karacter["foo"] `should equal` "Bob"
+            karacter.rules<String>("foo").
+                    map { it.toString() } `should equal`
+                    listOf("Most recent (default Bob)", "Die, die, die")
         }
     }
 })

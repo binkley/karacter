@@ -15,7 +15,9 @@ class Karacter private constructor(
     private fun <T> value(key: String) = rule<T>(key).invoke(this, key)
 
     private fun <T> rule(key: String) = rules<T>(key).firstOrNull()
-            ?: { karacter, key -> karacter.values<T>(key).first() }
+            ?: Rule("Most recent (required)") { karacter, key ->
+        karacter.values<T>(key).first()
+    }
 
     private fun rawValues(key: String) = layers.
             filter { key in it }.
@@ -31,8 +33,8 @@ class Karacter private constructor(
 
     @Suppress("UNCHECKED_CAST")
     fun <T> rules(key: String) = rawValues(key).
-            filter { it is Function<*> }.
-            map { it as (Karacter, String) -> T }
+            filter { it is Rule<*> }.
+            map { it as Rule<T> }
 
     override fun toString() = layers.withIndex().
             map { "${layers.size - it.index}: ${it.value}" }.
@@ -54,6 +56,12 @@ class Karacter private constructor(
         override fun toString() = "$name $cache"
     }
 
+    class Rule<out T>(private val name: String,
+                      private val rule: (Karacter, String) -> T)
+        : (Karacter, String) -> T by rule {
+        override fun toString() = name
+    }
+
     companion object {
         fun <T : EditPad<T>> newKaracter(next: (Karacter) -> T)
                 : Pair<T, Karacter> {
@@ -61,8 +69,9 @@ class Karacter private constructor(
             return next(karacter) to karacter
         }
 
-        fun <T> mostRecent(defaultValue: T): (Karacter, String) -> T
-                = { karacter, key ->
+        fun <T> mostRecent(defaultValue: T)
+                = Rule("Most recent (default $defaultValue)")
+        { karacter, key ->
             val values = karacter.values<T>(key)
             if (values.isEmpty()) defaultValue
             else values.first()
