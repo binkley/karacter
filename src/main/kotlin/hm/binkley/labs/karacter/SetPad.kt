@@ -2,12 +2,12 @@ package hm.binkley.labs.karacter
 
 import hm.binkley.labs.karacter.Karacter.EditPad
 
-open class SetPad<T : EditPad<T>, C : SetPad<T, C>>(
+open class SetPad<T : EditPad>(
         karacter: Karacter,
         name: String,
         private val full: Full,
         private val set: MutableSet<T> = mutableSetOf())
-    : EditPad<C>(karacter, name), Set<T> by set {
+    : EditPad(karacter, name), Set<T> by set {
     override val size
         get() = throw UnsupportedOperationException()
 

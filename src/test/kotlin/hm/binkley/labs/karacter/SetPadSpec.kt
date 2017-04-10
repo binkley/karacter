@@ -11,7 +11,7 @@ import org.jetbrains.spek.api.dsl.it
 object SetPadSpec : Spek({
     describe("A empty container pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad, TestSetPad>(karacter, "Test set pad",
+            : SetPad<ScratchPad>(karacter, "Test set pad",
                 Full("Unlimited") { false })
 
         val (setpad, _) = newKaracter(::TestSetPad)
@@ -38,7 +38,7 @@ object SetPadSpec : Spek({
 
     describe("A partially-filled ontainer pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad, TestSetPad>(karacter, "Test set pad",
+            : SetPad<ScratchPad>(karacter, "Test set pad",
                 Full("Unlimited") { false })
 
         val (setpad, _) = newKaracter(::TestSetPad)
@@ -61,7 +61,7 @@ object SetPadSpec : Spek({
 
     describe("A recycled container pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad, TestSetPad>(karacter, "Test set pad",
+            : SetPad<ScratchPad>(karacter, "Test set pad",
                 Full("Unlimited") { false })
 
         val (setpad, _) = newKaracter(::TestSetPad)
@@ -79,7 +79,7 @@ object SetPadSpec : Spek({
 
     describe("A full container pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad, TestSetPad>(karacter, "Test set pad",
+            : SetPad<ScratchPad>(karacter, "Test set pad",
                 Full("Max 1") { set -> set.isNotEmpty() })
 
         val (setpad, _) = newKaracter(::TestSetPad)

@@ -5,6 +5,7 @@ import hm.binkley.labs.karacter.Karacter.Companion.newKaracter
 import hm.binkley.labs.karacter.Karacter.EditPad
 import hm.binkley.labs.karacter.Karacter.Rule
 import org.amshove.kluent.`should be empty`
+import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not be`
 import org.jetbrains.spek.api.Spek
@@ -190,7 +191,7 @@ All (2): {foo=baz}
 
     describe("A custom edit pad") {
         class TestPad(karacter: Karacter)
-            : EditPad<TestPad>(karacter, "Test") {
+            : EditPad(karacter, "Test") {
             val foo = 82
         }
 
@@ -226,7 +227,7 @@ All (2): {foo=baz}
     describe("Keeping a whole pad") {
         val (editpad, karacter) = newKaracter(::ScratchPad)
 
-        class Newby(karacter: Karacter) : EditPad<Newby>(karacter, "Newby") {
+        class Newby(karacter: Karacter) : EditPad(karacter, "Newby") {
             init {
                 this["foo"] = 1
                 this["bar"] = "BAZ"
@@ -239,6 +240,22 @@ All (2): {foo=baz}
 
         it("should keep a whole pad") {
             karacter `should equal` mapOf("foo" to 1, "bar" to "BAZ")
+        }
+    }
+
+    describe("Keeping a custom pad") {
+        val (editpad, _) = newKaracter(::ScratchPad)
+
+        class Newby(karacter: Karacter) : EditPad(karacter, "Newby") {
+            val foo = 3
+        }
+
+        beforeGroup {
+            editpad.keep(::Newby).keep(::ScratchPad)
+        }
+
+        it("should keep a whole pad") {
+            editpad.keep(::Newby).foo `should be` 3
         }
     }
 })

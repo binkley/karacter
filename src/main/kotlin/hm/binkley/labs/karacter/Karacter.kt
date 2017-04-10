@@ -2,10 +2,10 @@ package hm.binkley.labs.karacter
 
 class Karacter private constructor(
         private val cache: MutableMap<String, Any> = mutableMapOf(),
-        private val pads: MutableList<EditPad<*>> = mutableListOf())
+        private val pads: MutableList<EditPad> = mutableListOf())
     : Map<String, Any> by cache {
     /** @todo Not concurrency-safe */
-    private fun keep(pad: EditPad<*>) = apply {
+    private fun keep(pad: EditPad) = apply {
         val keys = cache.keys + pad.keys
         pads.add(0, pad)
         // cache.clear() - TODO: Is Karacter only additive, no keys deleted?
@@ -40,15 +40,15 @@ class Karacter private constructor(
             // TODO: Makes spurious newline when there are no values
             joinToString("\n", "All (${pads.size}): $cache\n")
 
-    abstract class EditPad<T : EditPad<T>> protected constructor(
+    abstract class EditPad protected constructor(
             private val karacter: Karacter,
             val name: String,
             private val cache: MutableMap<String, Any> = mutableMapOf())
         : MutableMap<String, Any> by cache {
-        fun <U : EditPad<U>> keep(next: (Karacter) -> U): U
+        fun <U : EditPad> keep(next: (Karacter) -> U): U
                 = next(karacter.keep(this))
 
-        fun <U : EditPad<U>> discard(next: (Karacter) -> U) = next(karacter)
+        fun <U : EditPad> discard(next: (Karacter) -> U) = next(karacter)
 
         fun whatIf(): Karacter = karacter.copy().keep(this)
 
@@ -61,7 +61,7 @@ class Karacter private constructor(
     }
 
     companion object {
-        fun <T : EditPad<T>> newKaracter(next: (Karacter) -> T)
+        fun <T : EditPad> newKaracter(next: (Karacter) -> T)
                 : Pair<T, Karacter> {
             val karacter = Karacter()
             return next(karacter) to karacter
