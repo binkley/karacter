@@ -3,7 +3,7 @@ package hm.binkley.labs.karacter
 import hm.binkley.labs.karacter.Karacter.EditPad
 
 open class SetPad<T : EditPad>(
-        karacter: Karacter,
+        private val karacter: Karacter,
         name: String,
         private val full: Full,
         private val set: MutableSet<T> = mutableSetOf())
@@ -13,10 +13,10 @@ open class SetPad<T : EditPad>(
 
     override fun isEmpty() = throw UnsupportedOperationException()
 
-    fun toSet(): Set<T> = set
-    fun toMap(): Map<String, Any> = this
+    fun toSet(): Set<T> = set // TODO: Leaky - T's are modifiable
 
     fun add(pad: T) {
+        if (!karacter.toList().contains(pad)) throw IllegalArgumentException()
         if (full(set)) throw IllegalStateException()
         if (!set.add(pad)) throw IllegalArgumentException()
     }
@@ -25,7 +25,13 @@ open class SetPad<T : EditPad>(
         if (!set.remove(pad)) throw IllegalArgumentException()
     }
 
-    override fun toString() = "${super.toString()} $set"
+    override fun toString(): String {
+        val pads = karacter.toList()
+        return set.map { pads.indexOf(it) to it }.
+                sortedBy { it.first }.
+                map { "${pads.size - it.first - 1}. ${it.second}" }.
+                joinToString("\n", "${super.toString()}\n")
+    }
 
     open class Full(val name: String, private val full: (Set<*>) -> Boolean)
         : (Set<*>) -> Boolean by full {

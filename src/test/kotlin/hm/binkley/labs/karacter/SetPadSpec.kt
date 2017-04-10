@@ -3,6 +3,7 @@ package hm.binkley.labs.karacter
 import hm.binkley.labs.karacter.Karacter.Companion.newKaracter
 import org.amshove.kluent.`should be empty`
 import org.amshove.kluent.`should be`
+import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should throw`
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -25,8 +26,18 @@ object SetPadSpec : Spek({
             { setpad.isEmpty() } `should throw` UnsupportedOperationException::class
         }
 
-        it("should start that way") {
+        it("should start that way as a set") {
             setpad.toSet().`should be empty`()
+        }
+
+        it("should start that way as a map") {
+            setpad.toMap().`should be empty`()
+        }
+
+        it("should complain when adding before keeping") {
+            {
+                setpad.add(scratchpad)
+            } `should throw` IllegalArgumentException::class
         }
 
         it("should complain when removing") {
@@ -36,7 +47,7 @@ object SetPadSpec : Spek({
         }
     }
 
-    describe("A partially-filled ontainer pad") {
+    describe("A partially-filled container pad") {
         class TestSetPad(karacter: Karacter)
             : SetPad<ScratchPad>(karacter, "Test set pad",
                 Full("Unlimited") { false })
@@ -45,6 +56,7 @@ object SetPadSpec : Spek({
         val scratchpad = setpad.keep(::ScratchPad)
 
         beforeGroup {
+            scratchpad.keep(::ScratchPad)
             setpad.add(scratchpad)
         }
 
@@ -59,6 +71,27 @@ object SetPadSpec : Spek({
         }
     }
 
+    describe("A complex container pad") {
+        class TestSetPad(karacter: Karacter)
+            : SetPad<ScratchPad>(karacter, "Test set pad",
+                Full("Unlimited") { false })
+
+        it("should display nicely") {
+            val (setpad, _) = newKaracter(::TestSetPad)
+            val scratchpadA = setpad.keep(::ScratchPad)
+            val scratchpadB = scratchpadA.keep(::ScratchPad)
+            val scratchpadC = scratchpadB.keep(::ScratchPad)
+            scratchpadC["foo"] = "bar"
+            scratchpadC.keep(::ScratchPad)
+            setpad.add(scratchpadA)
+            setpad.add(scratchpadC)
+
+            setpad.toString() `should equal` """Test set pad {}
+3. Scratch {foo=bar}
+1. Scratch {}"""
+        }
+    }
+
     describe("A recycled container pad") {
         class TestSetPad(karacter: Karacter)
             : SetPad<ScratchPad>(karacter, "Test set pad",
@@ -68,6 +101,7 @@ object SetPadSpec : Spek({
         val scratchpad = setpad.keep(::ScratchPad)
 
         beforeGroup {
+            scratchpad.keep(::ScratchPad)
             setpad.add(scratchpad)
             setpad.remove(scratchpad)
         }
@@ -86,12 +120,15 @@ object SetPadSpec : Spek({
         val scratchpad = setpad.keep(::ScratchPad)
 
         beforeGroup {
+            scratchpad.keep(::ScratchPad)
             setpad.add(scratchpad)
         }
 
         it("should complain when adding more") {
             {
-                setpad.add(scratchpad.keep(::ScratchPad))
+                val extrapad = scratchpad.keep(::ScratchPad)
+                extrapad.keep(::ScratchPad)
+                setpad.add(extrapad)
             } `should throw` IllegalStateException::class
         }
     }

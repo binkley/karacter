@@ -8,7 +8,6 @@ class Karacter private constructor(
     private fun keep(pad: EditPad) = apply {
         val keys = cache.keys + pad.keys
         pads.add(0, pad)
-        // cache.clear() - TODO: Is Karacter only additive, no keys deleted?
         keys.forEach { cache[it] = value(it) }
     }
 
@@ -35,6 +34,8 @@ class Karacter private constructor(
             filter { it is Rule<*> }.
             map { it as Rule<T> }
 
+    fun toList(): List<Map<String, Any>> = pads
+
     override fun toString() = pads.withIndex().
             map { "${pads.size - it.index}: ${it.value}" }.
             // TODO: Makes spurious newline when there are no values
@@ -43,8 +44,8 @@ class Karacter private constructor(
     abstract class EditPad protected constructor(
             private val karacter: Karacter,
             val name: String,
-            private val cache: MutableMap<String, Any> = mutableMapOf())
-        : MutableMap<String, Any> by cache {
+            private val map: MutableMap<String, Any> = mutableMapOf())
+        : MutableMap<String, Any> by map {
         fun <U : EditPad> keep(next: (Karacter) -> U): U
                 = next(karacter.keep(this))
 
@@ -52,7 +53,9 @@ class Karacter private constructor(
 
         fun whatIf(): Karacter = karacter.copy().keep(this)
 
-        override fun toString() = "$name $cache"
+        fun toMap(): Map<String, Any> = map
+
+        override fun toString() = "$name $map"
     }
 
     class Rule<out T>(val name: String, rule: (Karacter, String) -> T)
