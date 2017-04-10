@@ -42,7 +42,7 @@ class Karacter private constructor(
 
     abstract class EditPad<T : EditPad<T>> protected constructor(
             private val karacter: Karacter,
-            private val name: String,
+            val name: String,
             private val cache: MutableMap<String, Any> = mutableMapOf())
         : MutableMap<String, Any> by cache {
         fun <U : EditPad<U>> keep(next: (Karacter) -> U): U
@@ -55,8 +55,7 @@ class Karacter private constructor(
         override fun toString() = "$name $cache"
     }
 
-    class Rule<out T>(private val name: String,
-                      private val rule: (Karacter, String) -> T)
+    class Rule<out T>(val name: String, rule: (Karacter, String) -> T)
         : (Karacter, String) -> T by rule {
         override fun toString() = "[Rule: $name]"
     }

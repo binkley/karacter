@@ -21,7 +21,7 @@
     <properties>
         <!-- @formatter:off -->
         <generateBackupPoms>false</generateBackupPoms>
-        <jacoco.coverage>0.75</jacoco.coverage>
+        <jacoco.coverage>0.73</jacoco.coverage>
         <jacoco.version>0.7.9</jacoco.version>
         <java.charset>UTF-8</java.charset>
         <java.version>1.8</java.version>
@@ -239,8 +239,8 @@
                     <execution>
                         <id>jacoco-check</id>
                         <goals>
-                            <goal>check</goal>
                             <goal>report</goal>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
