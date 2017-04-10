@@ -1,6 +1,8 @@
 package hm.binkley.labs.karacter
 
 import hm.binkley.labs.karacter.Karacter.Companion.newKaracter
+import hm.binkley.labs.karacter.SetPad.Full.Companion.MAX
+import hm.binkley.labs.karacter.SetPad.Full.Companion.UNLIMITED
 import org.amshove.kluent.`should be empty`
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should equal`
@@ -12,8 +14,7 @@ import org.jetbrains.spek.api.dsl.it
 object SetPadSpec : Spek({
     describe("A empty container pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad>(karacter, "Test set pad",
-                Full("Unlimited") { false })
+            : SetPad<ScratchPad>(karacter, "Test set pad", UNLIMITED)
 
         val (setpad, _) = newKaracter(::TestSetPad)
         val scratchpad = setpad.keep(::ScratchPad)
@@ -49,8 +50,7 @@ object SetPadSpec : Spek({
 
     describe("A partially-filled container pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad>(karacter, "Test set pad",
-                Full("Unlimited") { false })
+            : SetPad<ScratchPad>(karacter, "Test set pad", UNLIMITED)
 
         val (setpad, _) = newKaracter(::TestSetPad)
         val scratchpad = setpad.keep(::ScratchPad)
@@ -73,8 +73,7 @@ object SetPadSpec : Spek({
 
     describe("A complex container pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad>(karacter, "Test set pad",
-                Full("Unlimited") { false })
+            : SetPad<ScratchPad>(karacter, "Test set pad", UNLIMITED)
 
         it("should display nicely") {
             val (setpad, _) = newKaracter(::TestSetPad)
@@ -94,8 +93,7 @@ object SetPadSpec : Spek({
 
     describe("A recycled container pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad>(karacter, "Test set pad",
-                Full("Unlimited") { false })
+            : SetPad<ScratchPad>(karacter, "Test set pad", UNLIMITED)
 
         val (setpad, _) = newKaracter(::TestSetPad)
         val scratchpad = setpad.keep(::ScratchPad)
@@ -113,8 +111,7 @@ object SetPadSpec : Spek({
 
     describe("A full container pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad>(karacter, "Test set pad",
-                Full("Max 1") { set -> set.isNotEmpty() })
+            : SetPad<ScratchPad>(karacter, "Test set pad", MAX(1))
 
         val (setpad, _) = newKaracter(::TestSetPad)
         val scratchpad = setpad.keep(::ScratchPad)

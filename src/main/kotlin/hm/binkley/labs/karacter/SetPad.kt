@@ -36,5 +36,10 @@ open class SetPad<T : EditPad>(
     open class Full(val name: String, private val full: (Set<*>) -> Boolean)
         : (Set<*>) -> Boolean by full {
         override fun toString() = name
+
+        companion object {
+            val UNLIMITED = Full("Unlimited") { false }
+            fun MAX(max: Int) = Full("Max $max") { set -> set.size == max }
+        }
     }
 }
