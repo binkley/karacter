@@ -37,9 +37,8 @@ class Karacter private constructor(
     fun toList(): List<Map<String, Any>> = pads
 
     override fun toString() = pads.withIndex().
-            map { "${pads.size - it.index}: ${it.value}" }.
-            // TODO: Makes spurious newline when there are no values
-            joinToString("\n", "All (${pads.size}): $cache\n")
+            map { "\n${pads.size - it.index}: ${it.value}" }.
+            joinToString("", "All (${pads.size}): $cache")
 
     abstract class EditPad protected constructor(
             private val karacter: Karacter,

@@ -29,8 +29,8 @@ open class SetPad<T : EditPad>(
         val pads = karacter.toList()
         return set.map { pads.indexOf(it) to it }.
                 sortedBy { it.first }.
-                map { "${pads.size - it.first - 1}. ${it.second}" }.
-                joinToString("\n", "${super.toString()}\n")
+                map { "\n - ${pads.size - it.first - 1}. ${it.second}" }.
+                joinToString("", super.toString())
     }
 
     open class Full(val name: String, private val full: (Set<*>) -> Boolean)

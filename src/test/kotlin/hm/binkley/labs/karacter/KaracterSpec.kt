@@ -28,6 +28,10 @@ object KaracterSpec : Spek({
             val newEditpad = editpad.discard(::ScratchPad)
             newEditpad `should not be` editpad
         }
+
+        it("should display nicely") {
+            karacter.toString() `should equal` "All (0): {}"
+        }
     }
 
     describe("A character with edit pad changes") {
@@ -137,8 +141,7 @@ object KaracterSpec : Spek({
         }
 
         it("should diplay nicely") {
-            karacter.toString() `should equal` """
-All (2): {foo=baz}
+            karacter.toString() `should equal` """All (2): {foo=baz}
 2: Scratch {foo=baz}
 1: Scratch {foo=bar}
 """.trim()
