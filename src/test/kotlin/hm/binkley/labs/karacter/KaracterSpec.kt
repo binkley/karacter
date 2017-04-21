@@ -153,8 +153,8 @@ object KaracterSpec : Spek({
 
         beforeGroup {
             editpad["foo"] = Rule("Sum all")
-            { karacter: Karacter, key: String ->
-                karacter.values<Int>(key).sum()
+            { _karacter: Karacter, key: String ->
+                _karacter.values<Int>(key).sum()
             }
             editpad.keep(::ScratchPad)
         }
@@ -173,8 +173,8 @@ object KaracterSpec : Spek({
 
         beforeGroup {
             editpad["foo"] = Rule("Sum all")
-            { karacter: Karacter, key: String ->
-                karacter.values<Int>(key).sum()
+            { _karacter: Karacter, key: String ->
+                _karacter.values<Int>(key).sum()
             }
             editpad = editpad.keep(::ScratchPad)
             editpad["foo"] = 3
@@ -210,8 +210,8 @@ object KaracterSpec : Spek({
 
         beforeGroup {
             editpad["foo"] = Rule("Die, die, die")
-            { karacter: Karacter, key: String ->
-                if (1 < karacter.rules<Any>(key).size) // Ignore self
+            { _karacter: Karacter, key: String ->
+                if (1 < _karacter.rules<Any>(key).size) // Ignore self
                     throw AssertionError("Earlier rule should be ignored")
             }
             editpad = editpad.keep(::ScratchPad)
@@ -230,7 +230,7 @@ object KaracterSpec : Spek({
     describe("Keeping a whole pad") {
         val (editpad, karacter) = newKaracter(::ScratchPad)
 
-        class Newby(karacter: Karacter) : EditPad(karacter, "Newby") {
+        class Newby(_karacter: Karacter) : EditPad(_karacter, "Newby") {
             init {
                 this["foo"] = 1
                 this["bar"] = "BAZ"

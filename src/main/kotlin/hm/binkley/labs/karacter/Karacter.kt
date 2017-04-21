@@ -14,8 +14,8 @@ class Karacter private constructor(
     private fun <T> value(key: String) = rule<T>(key).invoke(this, key)
 
     private fun <T> rule(key: String) = rules<T>(key).firstOrNull()
-            ?: Rule("Most recent (required)") { karacter, key ->
-        karacter.values<T>(key).first()
+            ?: Rule("Most recent (required)") { karacter, _key   ->
+        karacter.values<T>(_key).first()
     }
 
     private fun rawValues(key: String) = pads.
@@ -41,7 +41,7 @@ class Karacter private constructor(
             joinToString("", "All (${pads.size}): $cache")
 
     abstract class EditPad protected constructor(
-            private val karacter: Karacter,
+            protected val karacter: Karacter,
             val name: String,
             private val map: MutableMap<String, Any> = mutableMapOf())
         : MutableMap<String, Any> by map {

@@ -3,7 +3,7 @@ package hm.binkley.labs.karacter
 import hm.binkley.labs.karacter.Karacter.EditPad
 
 open class SetPad<T : EditPad>(
-        private val karacter: Karacter,
+        karacter: Karacter,
         name: String,
         private val full: Full,
         private val set: MutableSet<T> = mutableSetOf())
