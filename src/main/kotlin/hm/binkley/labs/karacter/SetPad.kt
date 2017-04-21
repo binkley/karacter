@@ -8,10 +8,20 @@ open class SetPad<T : EditPad>(
         private val full: Full,
         private val set: MutableSet<T> = mutableSetOf())
     : EditPad(karacter, name), Set<T> by set {
-    override val size
+    /**
+     * @throws UnsupportedOperationException Use `toSet().size` or `toMap().size` instead
+     * @see [SetPad.toSet]
+     * @see [EditPad.toMap]
+     */
+    override final val size
         get() = throw UnsupportedOperationException()
 
-    override fun isEmpty() = throw UnsupportedOperationException()
+    /**
+     * @throws UnsupportedOperationException Use `toSet().size` or `toMap().size` instead
+     * @see [SetPad.toSet]
+     * @see [EditPad.toMap]
+     */
+    override final fun isEmpty() = throw UnsupportedOperationException()
 
     fun toSet(): Set<T> = set // TODO: Leaky - T's are modifiable
 
