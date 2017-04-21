@@ -23,7 +23,8 @@ open class SetPad<T : MutableEditPad>(
      */
     override final fun isEmpty() = throw UnsupportedOperationException()
 
-    fun toSet(): Set<T> = set // TODO: Leaky - T's are modifiable
+    /** @todo When compiler suppots lower bounds, use immutable base */
+    fun toSet(): Set<T> = set
 
     fun add(pad: T) {
         if (!karacter.toList().contains(pad)) throw IllegalArgumentException()
