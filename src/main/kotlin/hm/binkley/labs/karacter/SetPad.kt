@@ -1,17 +1,17 @@
 package hm.binkley.labs.karacter
 
-import hm.binkley.labs.karacter.Karacter.EditPad
+import hm.binkley.labs.karacter.Karacter.MutableEditPad
 
-open class SetPad<T : EditPad>(
+open class SetPad<T : MutableEditPad>(
         karacter: Karacter,
         name: String,
         private val full: Full,
         private val set: MutableSet<T> = mutableSetOf())
-    : EditPad(karacter, name), Set<T> by set {
+    : MutableEditPad(karacter, name), Set<T> by set {
     /**
      * @throws UnsupportedOperationException Use `toSet().size` or `toMap().size` instead
      * @see [SetPad.toSet]
-     * @see [EditPad.toMap]
+     * @see [MutableEditPad.toMap]
      */
     override final val size
         get() = throw UnsupportedOperationException()
@@ -19,7 +19,7 @@ open class SetPad<T : EditPad>(
     /**
      * @throws UnsupportedOperationException Use `toSet().size` or `toMap().size` instead
      * @see [SetPad.toSet]
-     * @see [EditPad.toMap]
+     * @see [MutableEditPad.toMap]
      */
     override final fun isEmpty() = throw UnsupportedOperationException()
 

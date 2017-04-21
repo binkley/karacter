@@ -2,7 +2,7 @@ package hm.binkley.labs.karacter
 
 import hm.binkley.labs.karacter.Karacter.Companion.mostRecent
 import hm.binkley.labs.karacter.Karacter.Companion.newKaracter
-import hm.binkley.labs.karacter.Karacter.EditPad
+import hm.binkley.labs.karacter.Karacter.MutableEditPad
 import hm.binkley.labs.karacter.Karacter.Rule
 import org.amshove.kluent.`should be empty`
 import org.amshove.kluent.`should be`
@@ -194,7 +194,7 @@ object KaracterSpec : Spek({
 
     describe("A custom edit pad") {
         class TestPad(karacter: Karacter)
-            : EditPad(karacter, "Test") {
+            : MutableEditPad(karacter, "Test") {
             val foo = 82
         }
 
@@ -230,7 +230,7 @@ object KaracterSpec : Spek({
     describe("Keeping a whole pad") {
         val (editpad, karacter) = newKaracter(::ScratchPad)
 
-        class Newby(_karacter: Karacter) : EditPad(_karacter, "Newby") {
+        class Newby(_karacter: Karacter) : MutableEditPad(_karacter, "Newby") {
             init {
                 this["foo"] = 1
                 this["bar"] = "BAZ"
@@ -249,7 +249,7 @@ object KaracterSpec : Spek({
     describe("Keeping a custom pad") {
         val (editpad, _) = newKaracter(::ScratchPad)
 
-        class Newby(karacter: Karacter) : EditPad(karacter, "Newby") {
+        class Newby(karacter: Karacter) : MutableEditPad(karacter, "Newby") {
             val foo = 3
         }
 

@@ -2,10 +2,10 @@ package hm.binkley.labs.karacter
 
 class Karacter private constructor(
         private val cache: MutableMap<String, Any> = mutableMapOf(),
-        private val pads: MutableList<EditPad> = mutableListOf())
+        private val pads: MutableList<MutableEditPad> = mutableListOf())
     : Map<String, Any> by cache {
     /** @todo Not concurrency-safe */
-    private fun keep(pad: EditPad) = apply {
+    private fun keep(pad: MutableEditPad) = apply {
         val keys = cache.keys + pad.keys
         pads.add(0, pad)
         keys.forEach { cache[it] = value(it) }
@@ -40,15 +40,15 @@ class Karacter private constructor(
             map { "\n${pads.size - it.index}: ${it.value}" }.
             joinToString("", "All (${pads.size}): $cache")
 
-    abstract class EditPad protected constructor(
+    abstract class MutableEditPad protected constructor(
             protected val karacter: Karacter,
             val name: String,
             private val map: MutableMap<String, Any> = mutableMapOf())
         : MutableMap<String, Any> by map {
-        fun <U : EditPad> keep(next: (Karacter) -> U): U
+        fun <U : MutableEditPad> keep(next: (Karacter) -> U): U
                 = next(karacter.keep(this))
 
-        fun <U : EditPad> discard(next: (Karacter) -> U) = next(karacter)
+        fun <U : MutableEditPad> discard(next: (Karacter) -> U) = next(karacter)
 
         fun whatIf(): Karacter = karacter.copy().keep(this)
 
@@ -63,7 +63,7 @@ class Karacter private constructor(
     }
 
     companion object {
-        fun <T : EditPad> newKaracter(next: (Karacter) -> T)
+        fun <T : MutableEditPad> newKaracter(next: (Karacter) -> T)
                 : Pair<T, Karacter> {
             val karacter = Karacter()
             return next(karacter) to karacter

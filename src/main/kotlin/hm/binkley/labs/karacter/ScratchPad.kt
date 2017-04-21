@@ -1,6 +1,6 @@
 package hm.binkley.labs.karacter
 
-import hm.binkley.labs.karacter.Karacter.EditPad
+import hm.binkley.labs.karacter.Karacter.MutableEditPad
 
 class ScratchPad(karacter: Karacter)
-    : EditPad(karacter, "Scratch")
+    : MutableEditPad(karacter, "Scratch")
