@@ -44,8 +44,8 @@ open class SetPad<T : MutableEditPad>(
                 joinToString("", super.toString())
     }
 
-    open class Full(val name: String, private val full: (Set<*>) -> Boolean)
-        : (Set<*>) -> Boolean by full {
+    open class Full(val name: String, checkFull: (Set<*>) -> Boolean)
+        : (Set<*>) -> Boolean by checkFull {
         override fun toString() = name
 
         companion object {
