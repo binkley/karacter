@@ -92,8 +92,8 @@ object SetPadSpec : Spek({
             setpad.add(scratchpadC)
 
             setpad.toString() `should equal` """Test set pad {}
- - 3. Scratch {foo=bar}
- - 1. Scratch {}"""
+ - (3) -> Scratch {foo=bar}
+ - (1) -> Scratch {}"""
         }
     }
 

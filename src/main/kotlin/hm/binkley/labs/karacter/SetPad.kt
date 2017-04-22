@@ -42,7 +42,7 @@ open class SetPad<T : MutableEditPad>(
         val pads = karacter.toList()
         return set.map { pads.indexOf(it) to it }.
                 sortedBy { it.first }.
-                map { "\n - ${pads.size - it.first - 1}. ${it.second}" }.
+                map { "\n - (${pads.size - it.first - 1}) -> ${it.second}" }.
                 joinToString("", super.toString())
     }
 
