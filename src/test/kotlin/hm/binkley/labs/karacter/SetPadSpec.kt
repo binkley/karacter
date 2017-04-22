@@ -6,7 +6,9 @@ import hm.binkley.labs.karacter.SetPad.Full.Companion.UNLIMITED
 import org.amshove.kluent.`should be empty`
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should equal`
+import org.amshove.kluent.`should throw the Exception`
 import org.amshove.kluent.`should throw`
+import org.amshove.kluent.`with message`
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -20,11 +22,15 @@ object SetPadSpec : Spek({
         val scratchpad = setpad.keep(::ScratchPad)
 
         it("should complain on 'size'") {
-            { setpad.size } `should throw` UnsupportedOperationException::class
+            {
+                setpad.size
+            } `should throw the Exception` UnsupportedOperationException::class `with message` "Use toMap().size or toSet().size"
         }
 
         it("should complain on 'isEmpty'") {
-            { setpad.isEmpty() } `should throw` UnsupportedOperationException::class
+            {
+                setpad.isEmpty()
+            } `should throw the Exception` UnsupportedOperationException::class `with message` "Use toMap().isEmpty() or toSet().isEmpty()"
         }
 
         it("should start that way as a set") {

@@ -9,19 +9,21 @@ open class SetPad<T : MutableEditPad>(
         private val set: MutableSet<T> = mutableSetOf())
     : MutableEditPad(karacter, name), Set<T> by set {
     /**
-     * @throws UnsupportedOperationException Use `toSet().size` or `toMap().size` instead
+     * @throws UnsupportedOperationException Use `toSet().size` or `toMap().size`
      * @see [SetPad.toSet]
      * @see [MutableEditPad.toMap]
      */
     override final val size
-        get() = throw UnsupportedOperationException()
+        get() = throw UnsupportedOperationException(
+                "Use toMap().size or toSet().size")
 
     /**
-     * @throws UnsupportedOperationException Use `toSet().size` or `toMap().size` instead
+     * @throws UnsupportedOperationException Use `toSet().isEmpty()` or `toMap().isEmpty()`
      * @see [SetPad.toSet]
      * @see [MutableEditPad.toMap]
      */
-    override final fun isEmpty() = throw UnsupportedOperationException()
+    override final fun isEmpty() = throw UnsupportedOperationException(
+            "Use toMap().isEmpty() or toSet().isEmpty()")
 
     /** @todo When compiler suppots lower bounds, use immutable base */
     fun toSet(): Set<T> = set
