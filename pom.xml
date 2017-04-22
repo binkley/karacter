@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>lib</module>
+        <module>karacter-lib</module>
     </modules>
 
     <name>Karacter Parent</name>
