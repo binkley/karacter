@@ -12,6 +12,7 @@
 
     <modules>
         <module>karacter-lib</module>
+        <module>karacter-domain</module>
     </modules>
 
     <name>Karacter Parent</name>
@@ -71,6 +72,7 @@
             </releases>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>jcenter</id>
@@ -88,6 +90,16 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>karacter-lib</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -218,7 +230,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <failIfNoTests>true</failIfNoTests>
+                    <!-- <failIfNoTests>true</failIfNoTests> -->
                     <includes>
                         <include>**/*Spec.*</include>
                     </includes>
