@@ -120,14 +120,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>hm.binkley.spek</groupId>
+            <groupId>org.jetbrains.spek</groupId>
             <artifactId>spek-api</artifactId>
             <version>${spek.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <!-- TODO: Remove when IntelliJ groks -->
-            <groupId>hm.binkley.spek</groupId>
+            <groupId>org.jetbrains.spek</groupId>
             <artifactId>spek-junit-platform-engine</artifactId>
             <version>${spek.version}</version>
             <scope>test</scope>
@@ -137,6 +137,12 @@
             <artifactId>kluent</artifactId>
             <version>${kluent.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -248,7 +254,7 @@
                         <version>${junit.jupiter.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>hm.binkley.spek</groupId>
+                        <groupId>org.jetbrains.spek</groupId>
                         <artifactId>spek-junit-platform-engine</artifactId>
                         <version>${spek.version}</version>
                     </dependency>
