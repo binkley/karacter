@@ -141,7 +141,8 @@ object KaracterSpec : Spek({
         }
 
         it("should diplay nicely") {
-            karacter.toString() `should equal` """All (2): {foo=baz}
+            karacter.toString() `should equal` """
+All (2): {foo=baz}
 2: Scratch {foo=baz}
 1: Scratch {foo=bar}
 """.trim()

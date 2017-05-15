@@ -48,7 +48,8 @@ class Karacter private constructor(
         fun <U : MutableEditPad> keep(next: (Karacter) -> U): U
                 = next(karacter.keep(this))
 
-        fun <U : MutableEditPad> discard(next: (Karacter) -> U) = next(karacter)
+        fun <U : MutableEditPad> discard(next: (Karacter) -> U)
+                = next(karacter)
 
         fun whatIf(): Karacter = karacter.copy().keep(this)
 
