@@ -25,7 +25,7 @@ open class SetPad<T : MutableEditPad>(
     override final fun isEmpty() = throw UnsupportedOperationException(
             "Use toMap().isEmpty() or toSet().isEmpty()")
 
-    /** @todo When compiler suppots lower bounds, use immutable base */
+    /** @todo When compiler supports lower bounds, use immutable base */
     fun toSet(): Set<T> = set
 
     fun add(pad: T) {
