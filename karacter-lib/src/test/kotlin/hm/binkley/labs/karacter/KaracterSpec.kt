@@ -14,7 +14,7 @@ import org.jetbrains.spek.api.dsl.it
 
 object KaracterSpec : Spek({
     describe("A new character and edit pad") {
-        val (editpad, karacter) = newKaracter(::ScratchPad)
+        val (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         it("should have nothing in the character") {
             karacter.`should be empty`()
@@ -25,7 +25,7 @@ object KaracterSpec : Spek({
         }
 
         it("should start over") {
-            val newEditpad = editpad.discard(::ScratchPad)
+            val newEditpad = editpad.discard { ScratchPad(it) }
             newEditpad `should not be` editpad
         }
 
@@ -35,7 +35,7 @@ object KaracterSpec : Spek({
     }
 
     describe("A character with edit pad changes") {
-        val (editpad, karacter) = newKaracter(::ScratchPad)
+        val (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup { editpad["foo"] = "bar" }
 
@@ -49,13 +49,13 @@ object KaracterSpec : Spek({
     }
 
     describe("A character with a committed edit pad changes") {
-        var (editpad, karacter) = newKaracter(::ScratchPad)
+        var (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
             editpad["foo"] = "bar"
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
             editpad["foo"] = "baz"
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
         }
 
         it("should have one thing in the character") {
@@ -72,12 +72,12 @@ object KaracterSpec : Spek({
     }
 
     describe("A character with a multiple committed edit pad changes") {
-        var (editpad, karacter) = newKaracter(::ScratchPad)
+        var (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
             editpad["foo"] = "bar"
             editpad["fruit"] = "apple"
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
         }
 
         it("should have all things in the character") {
@@ -92,11 +92,11 @@ object KaracterSpec : Spek({
     }
 
     describe("A view of a character with mixed changes") {
-        var (editpad, _) = newKaracter(::ScratchPad)
+        var (editpad, _) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
             editpad["foo"] = "bar"
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
             editpad["foo"] = "baz"
         }
 
@@ -106,11 +106,11 @@ object KaracterSpec : Spek({
     }
 
     describe("A new character with a string key using default rule") {
-        var (editpad, karacter) = newKaracter(::ScratchPad)
+        var (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
             editpad["foo"] = mostRecent("")
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
         }
 
         it("should have no values for key") {
@@ -123,13 +123,13 @@ object KaracterSpec : Spek({
     }
 
     describe("A character with several string values") {
-        var (editpad, karacter) = newKaracter(::ScratchPad)
+        var (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
             editpad["foo"] = "bar"
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
             editpad["foo"] = "baz"
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
         }
 
         it("should have all values in character in reverse insert order") {
@@ -150,14 +150,14 @@ All (2): {foo=baz}
     }
 
     describe("A new character with an integer key") {
-        val (editpad, karacter) = newKaracter(::ScratchPad)
+        val (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
             editpad["foo"] = Rule("Sum all")
             { _karacter: Karacter, key: String ->
                 _karacter.values<Int>(key).sum()
             }
-            editpad.keep(::ScratchPad)
+            editpad.keep { ScratchPad(it) }
         }
 
         it("should have no values for key") {
@@ -170,18 +170,18 @@ All (2): {foo=baz}
     }
 
     describe("A character with several integer values using a sum rule") {
-        var (editpad, karacter) = newKaracter(::ScratchPad)
+        var (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
             editpad["foo"] = Rule("Sum all")
             { _karacter: Karacter, key: String ->
                 _karacter.values<Int>(key).sum()
             }
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
             editpad["foo"] = 3
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
             editpad["foo"] = 4
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
         }
 
         it("should have all values in character in reverse insert order") {
@@ -199,7 +199,7 @@ All (2): {foo=baz}
             val foo = 82
         }
 
-        val (editpad, _) = newKaracter(::TestPad)
+        val (editpad, _) = newKaracter { TestPad(it) }
 
         it("should behave like a vanilla edit pad") {
             editpad.foo `should equal` 82
@@ -207,7 +207,7 @@ All (2): {foo=baz}
     }
 
     describe("A value with several rules") {
-        var (editpad, karacter) = newKaracter(::ScratchPad)
+        var (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
             editpad["foo"] = Rule("Die, die, die")
@@ -215,9 +215,9 @@ All (2): {foo=baz}
                 if (1 < _karacter.rules<Any>(key).size) // Ignore self
                     throw AssertionError("Earlier rule should be ignored")
             }
-            editpad = editpad.keep(::ScratchPad)
+            editpad = editpad.keep { ScratchPad(it) }
             editpad["foo"] = mostRecent("Bob")
-            editpad.keep(::ScratchPad)
+            editpad.keep { ScratchPad(it) }
         }
 
         it("should use the most recent rule") {
@@ -229,7 +229,7 @@ All (2): {foo=baz}
     }
 
     describe("Keeping a whole pad") {
-        val (editpad, karacter) = newKaracter(::ScratchPad)
+        val (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         class Newby(_karacter: Karacter) : MutableEditPad(_karacter, "Newby") {
             init {
@@ -239,7 +239,7 @@ All (2): {foo=baz}
         }
 
         beforeGroup {
-            editpad.keep(::Newby).keep(::ScratchPad)
+            editpad.keep { Newby(it) }.keep { ScratchPad(it) }
         }
 
         it("should keep a whole pad") {
@@ -248,18 +248,18 @@ All (2): {foo=baz}
     }
 
     describe("Keeping a custom pad") {
-        val (editpad, _) = newKaracter(::ScratchPad)
+        val (editpad, _) = newKaracter { ScratchPad(it) }
 
         class Newby(karacter: Karacter) : MutableEditPad(karacter, "Newby") {
             val foo = 3
         }
 
         beforeGroup {
-            editpad.keep(::Newby).keep(::ScratchPad)
+            editpad.keep { Newby(it) }.keep { ScratchPad(it) }
         }
 
         it("should keep a whole pad") {
-            editpad.keep(::Newby).foo `should be` 3
+            editpad.keep { Newby(it) }.foo `should be` 3
         }
     }
 })

@@ -18,8 +18,8 @@ object SetPadSpec : Spek({
         class TestSetPad(karacter: Karacter)
             : SetPad<ScratchPad>(karacter, "Test set pad", UNLIMITED)
 
-        val (setpad, _) = newKaracter(::TestSetPad)
-        val scratchpad = setpad.keep(::ScratchPad)
+        val (setpad, _) = newKaracter { TestSetPad(it) }
+        val scratchpad = setpad.keep { ScratchPad(it) }
 
         it("should complain on 'size'") {
             {
@@ -58,11 +58,11 @@ object SetPadSpec : Spek({
         class TestSetPad(karacter: Karacter)
             : SetPad<ScratchPad>(karacter, "Test set pad", UNLIMITED)
 
-        val (setpad, _) = newKaracter(::TestSetPad)
-        val scratchpad = setpad.keep(::ScratchPad)
+        val (setpad, _) = newKaracter { TestSetPad(it) }
+        val scratchpad = setpad.keep { ScratchPad(it) }
 
         beforeGroup {
-            scratchpad.keep(::ScratchPad)
+            scratchpad.keep { ScratchPad(it) }
             setpad.add(scratchpad)
         }
 
@@ -82,12 +82,12 @@ object SetPadSpec : Spek({
             : SetPad<ScratchPad>(karacter, "Test set pad", UNLIMITED)
 
         it("should display nicely") {
-            val (setpad, _) = newKaracter(::TestSetPad)
-            val scratchpadA = setpad.keep(::ScratchPad)
-            val scratchpadB = scratchpadA.keep(::ScratchPad)
-            val scratchpadC = scratchpadB.keep(::ScratchPad)
+            val (setpad, _) = newKaracter { TestSetPad(it) }
+            val scratchpadA = setpad.keep { ScratchPad(it) }
+            val scratchpadB = scratchpadA.keep { ScratchPad(it) }
+            val scratchpadC = scratchpadB.keep { ScratchPad(it) }
             scratchpadC["foo"] = "bar"
-            scratchpadC.keep(::ScratchPad)
+            scratchpadC.keep { ScratchPad(it) }
             setpad.add(scratchpadA)
             setpad.add(scratchpadC)
 
@@ -101,11 +101,11 @@ object SetPadSpec : Spek({
         class TestSetPad(karacter: Karacter)
             : SetPad<ScratchPad>(karacter, "Test set pad", UNLIMITED)
 
-        val (setpad, _) = newKaracter(::TestSetPad)
-        val scratchpad = setpad.keep(::ScratchPad)
+        val (setpad, _) = newKaracter { TestSetPad(it) }
+        val scratchpad = setpad.keep { ScratchPad(it) }
 
         beforeGroup {
-            scratchpad.keep(::ScratchPad)
+            scratchpad.keep { ScratchPad(it) }
             setpad.add(scratchpad)
             setpad.remove(scratchpad)
         }
@@ -119,18 +119,18 @@ object SetPadSpec : Spek({
         class TestSetPad(karacter: Karacter)
             : SetPad<ScratchPad>(karacter, "Test set pad", MAX(1))
 
-        val (setpad, _) = newKaracter(::TestSetPad)
-        val scratchpad = setpad.keep(::ScratchPad)
+        val (setpad, _) = newKaracter { TestSetPad(it) }
+        val scratchpad = setpad.keep { ScratchPad(it) }
 
         beforeGroup {
-            scratchpad.keep(::ScratchPad)
+            scratchpad.keep { ScratchPad(it) }
             setpad.add(scratchpad)
         }
 
         it("should complain when adding more") {
             {
-                val extrapad = scratchpad.keep(::ScratchPad)
-                extrapad.keep(::ScratchPad)
+                val extrapad = scratchpad.keep { ScratchPad(it) }
+                extrapad.keep { ScratchPad(it) }
                 setpad.add(extrapad)
             } `should throw` IllegalStateException::class
         }
