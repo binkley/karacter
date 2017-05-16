@@ -85,7 +85,7 @@ open class SetPad<T : MutableEditPad>(
 
         companion object {
             val UNLIMITED = Full("Unlimited") { false }
-            fun MAX(max: Int) = Full("Max $max") { set -> set.size == max }
+            fun max(max: Int) = Full("Max $max") { set -> set.size == max }
         }
     }
 }

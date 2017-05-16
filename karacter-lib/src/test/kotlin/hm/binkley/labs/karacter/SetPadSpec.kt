@@ -1,8 +1,8 @@
 package hm.binkley.labs.karacter
 
 import hm.binkley.labs.karacter.Karacter.Companion.newKaracter
-import hm.binkley.labs.karacter.SetPad.Full.Companion.MAX
 import hm.binkley.labs.karacter.SetPad.Full.Companion.UNLIMITED
+import hm.binkley.labs.karacter.SetPad.Full.Companion.max
 import org.amshove.kluent.`should be empty`
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should equal`
@@ -180,7 +180,7 @@ Test set pad {}
 
     describe("A full container pad") {
         class TestSetPad(karacter: Karacter)
-            : SetPad<ScratchPad>(karacter, "Test set pad", MAX(1))
+            : SetPad<ScratchPad>(karacter, "Test set pad", max(1))
 
         val (setpad, _) = newKaracter { TestSetPad(it) }
         val scratchpad = setpad.keep { ScratchPad(it) }
