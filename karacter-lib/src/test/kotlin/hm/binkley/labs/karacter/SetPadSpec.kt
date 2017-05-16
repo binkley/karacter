@@ -122,7 +122,7 @@ Test set pad {}
             scratchpad.keep { ScratchPad(it) }
             setpad.add("J Random Addition", scratchpad).
                     remove("J Random Removal", scratchpad).
-                    keep { TestSetPad(it) }
+                    keep { ScratchPad(it) }
         }
 
         it("should start that way") {
