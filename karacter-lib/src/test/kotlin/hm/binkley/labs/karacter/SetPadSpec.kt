@@ -43,7 +43,8 @@ object SetPadSpec : Spek({
 
         it("should complain when adding before keeping") {
             {
-                setpad.add(scratchpad)
+                setpad.keep("J Random Addition", scratchpad).
+                        keep { TestSetPad(it) }
             } `should throw` IllegalArgumentException::class
         }
 
@@ -63,7 +64,8 @@ object SetPadSpec : Spek({
 
         beforeGroup {
             scratchpad.keep { ScratchPad(it) }
-            setpad.add(scratchpad)
+            setpad.keep("J Random Addition", scratchpad).
+                    keep { TestSetPad(it) }
         }
 
         it("should start that way") {
@@ -72,7 +74,8 @@ object SetPadSpec : Spek({
 
         it("should complain when re-adding") {
             {
-                setpad.add(scratchpad)
+                setpad.keep("J Other Addition", scratchpad).
+                        keep { TestSetPad(it) }
             } `should throw` IllegalArgumentException::class
         }
     }
@@ -88,12 +91,15 @@ object SetPadSpec : Spek({
             val scratchpadC = scratchpadB.keep { ScratchPad(it) }
             scratchpadC["foo"] = "bar"
             scratchpadC.keep { ScratchPad(it) }
-            setpad.add(scratchpadA)
-            setpad.add(scratchpadC)
+            setpad.keep("J Random Addition", scratchpadA).
+                    keep("J Other Addition", scratchpadC).
+                    keep { TestSetPad(it) }
 
-            setpad.toString() `should equal` """Test set pad {}
+            setpad.toString() `should equal` """
+Test set pad {}
  - (3) -> Scratch {foo=bar}
- - (1) -> Scratch {}"""
+ - (1) -> Scratch {}
+""".trim()
         }
     }
 
@@ -106,7 +112,8 @@ object SetPadSpec : Spek({
 
         beforeGroup {
             scratchpad.keep { ScratchPad(it) }
-            setpad.add(scratchpad)
+            setpad.keep("J Random Addition", scratchpad).
+                    keep { TestSetPad(it) }
             setpad.remove(scratchpad)
         }
 
@@ -124,14 +131,16 @@ object SetPadSpec : Spek({
 
         beforeGroup {
             scratchpad.keep { ScratchPad(it) }
-            setpad.add(scratchpad)
+            setpad.keep("J Random Addition", scratchpad).
+                    keep { TestSetPad(it) }
         }
 
         it("should complain when adding more") {
             {
                 val extrapad = scratchpad.keep { ScratchPad(it) }
                 extrapad.keep { ScratchPad(it) }
-                setpad.add(extrapad)
+                setpad.keep("J Random Addition", extrapad).
+                        keep { TestSetPad(it) }
             } `should throw` IllegalStateException::class
         }
     }

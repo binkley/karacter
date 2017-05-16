@@ -28,10 +28,23 @@ open class SetPad<T : MutableEditPad>(
     /** @todo When compiler supports lower bounds, use immutable base */
     fun toSet(): Set<T> = set
 
-    fun add(pad: T) {
-        if (!karacter.toList().contains(pad)) throw IllegalArgumentException()
-        if (full(set)) throw IllegalStateException()
-        if (!set.add(pad)) throw IllegalArgumentException()
+    fun keep(name: String, pad: T) = super.keep { karacter: Karacter ->
+        Add(karacter, name, pad)
+    }
+
+    inner class Add(karacter: Karacter, name: String, private val pad: T)
+        : MutableEditPad(karacter, name) {
+        override fun <U : MutableEditPad> keep(next: (Karacter) -> U): U {
+            if (!karacter.toList().contains(pad))
+                throw IllegalArgumentException()
+            if (full(set)) throw IllegalStateException()
+            if (!set.add(pad)) throw IllegalArgumentException()
+            return super.keep(next)
+        }
+
+        fun keep(name: String, pad: T) = keep { karacter: Karacter ->
+            Add(karacter, name, pad)
+        }
     }
 
     fun remove(pad: T) {

@@ -45,7 +45,7 @@ class Karacter private constructor(
             val name: String,
             private val map: MutableMap<String, Any> = mutableMapOf())
         : MutableMap<String, Any> by map {
-        fun <U : MutableEditPad> keep(next: (Karacter) -> U): U
+        open fun <U : MutableEditPad> keep(next: (Karacter) -> U): U
                 = next(karacter.keep(this))
 
         fun <U : MutableEditPad> discard(next: (Karacter) -> U)
