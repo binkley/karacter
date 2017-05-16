@@ -28,8 +28,12 @@ open class SetPad<T : MutableEditPad>(
     /** @todo When compiler supports lower bounds, use immutable base */
     fun toSet(): Set<T> = set
 
-    fun keep(name: String, pad: T) = super.keep { karacter: Karacter ->
-        Add(karacter, name, pad)
+    fun add(name: String, pad: T) = keep {
+        Add(it, name, pad)
+    }
+
+    fun remove(name: String, pad: T) = keep {
+        Remove(it, name, pad)
     }
 
     inner class Add(karacter: Karacter, name: String, private val pad: T)
@@ -42,13 +46,29 @@ open class SetPad<T : MutableEditPad>(
             return super.keep(next)
         }
 
-        fun keep(name: String, pad: T) = keep { karacter: Karacter ->
-            Add(karacter, name, pad)
+        fun add(name: String, pad: T) = keep {
+            Add(it, name, pad)
+        }
+
+        fun remove(name: String, pad: T) = keep {
+            Remove(it, name, pad)
         }
     }
 
-    fun remove(pad: T) {
-        if (!set.remove(pad)) throw IllegalArgumentException()
+    inner class Remove(karacter: Karacter, name: String, private val pad: T)
+        : MutableEditPad(karacter, name) {
+        override fun <U : MutableEditPad> keep(next: (Karacter) -> U): U {
+            if (!set.remove(pad)) throw IllegalArgumentException()
+            return super.keep(next)
+        }
+
+        fun add(name: String, pad: T) = keep {
+            Add(it, name, pad)
+        }
+
+        fun remove(name: String, pad: T) = keep {
+            Remove(it, name, pad)
+        }
     }
 
     override fun toString(): String {
