@@ -47,8 +47,7 @@ abstract class Fraction<F : Fraction<F>>(private val ctor: (Int, Int) -> F,
 
     override fun toString(): String {
         return BigDecimal.valueOf(numerator.toLong()).
-                divide(BigDecimal.valueOf(denominator.toLong()), 1,
-                        HALF_UP).
+                divide(BigDecimal.valueOf(denominator.toLong()), 1, HALF_UP).
                 stripTrailingZeros().
                 toString()
     }
