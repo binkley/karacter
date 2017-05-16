@@ -3,9 +3,7 @@ package hm.binkley.labs.karacter
 class Weight(numerator: Int, denominator: Int)
     : Fraction<Weight>(::Weight, numerator, denominator) {
 
-    override fun toString(): String {
-        return "${super.toString()}#"
-    }
+    override fun toString() = "${super.toString()}#"
 
     companion object {
         val WEIGHTLESS = inPounds(0)

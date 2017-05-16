@@ -40,17 +40,14 @@ abstract class Fraction<F : Fraction<F>>(private val ctor: (Int, Int) -> F,
         return ctor.invoke(numerator, denominator)
     }
 
-    override final fun compareTo(other: F): Int {
-        return Integer.compare(numerator * other.denominator,
-                other.numerator * denominator)
-    }
+    override final fun compareTo(other: F)
+            = Integer.compare(numerator * other.denominator,
+            other.numerator * denominator)
 
-    override fun toString(): String {
-        return BigDecimal.valueOf(numerator.toLong()).
-                divide(BigDecimal.valueOf(denominator.toLong()), 1, HALF_UP).
-                stripTrailingZeros().
-                toString()
-    }
+    override fun toString() = BigDecimal.valueOf(numerator.toLong()).
+            divide(BigDecimal.valueOf(denominator.toLong()), 1, HALF_UP).
+            stripTrailingZeros().
+            toString()
 
     override final fun equals(other: Any?): Boolean {
         if (this === other) return true
