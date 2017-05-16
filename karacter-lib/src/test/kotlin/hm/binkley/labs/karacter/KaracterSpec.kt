@@ -48,7 +48,7 @@ object KaracterSpec : Spek({
         }
     }
 
-    describe("A character with a committed edit pad changes") {
+    describe("A character with a kept edit pad changes") {
         var (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
@@ -71,7 +71,7 @@ object KaracterSpec : Spek({
         }
     }
 
-    describe("A character with a multiple committed edit pad changes") {
+    describe("A character with a multiple kept edit pad changes") {
         var (editpad, karacter) = newKaracter { ScratchPad(it) }
 
         beforeGroup {
@@ -100,7 +100,7 @@ object KaracterSpec : Spek({
             editpad["foo"] = "baz"
         }
 
-        it("should have a view as if committed") {
+        it("should have a view as if kept") {
             editpad.whatIf() `should equal` mapOf("foo" to "baz")
         }
     }
