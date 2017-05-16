@@ -72,12 +72,60 @@ object SetPadSpec : Spek({
         it("should start that way") {
             setpad.toSet().size `should be` 1
         }
+    }
+
+    describe("A contaner pad with multiple adds and removals") {
+        class TestSetPad(karacter: Karacter)
+            : SetPad<ScratchPad>(karacter, "Test set pad", UNLIMITED)
 
         it("should complain when re-adding") {
             {
+                val (setpad, _) = newKaracter { TestSetPad(it) }
+                val scratchpad = setpad.keep { ScratchPad(it) }
+                setpad.add("J Random Addition", scratchpad).
+                        keep { ScratchPad(it) }
+
                 setpad.add("J Other Addition", scratchpad).
                         keep { ScratchPad(it) }
             } `should throw` IllegalArgumentException::class
+        }
+
+        it("should complain adding an unkept pad") {
+            {
+                val (setpad, _) = newKaracter { TestSetPad(it) }
+                val scratchpad = setpad.keep { ScratchPad(it) }
+
+                setpad.add("J Other Addition", scratchpad).
+                        keep { ScratchPad(it) }
+            } `should throw` IllegalArgumentException::class
+        }
+
+        it("should complain removing an unadded pad") {
+            {
+                val (setpad, _) = newKaracter { TestSetPad(it) }
+                val scratchpad = setpad.keep { ScratchPad(it) }
+                scratchpad.keep { ScratchPad(it) }
+
+                setpad.remove("J Random Removal", scratchpad).
+                        keep { ScratchPad(it) }
+            } `should throw` IllegalArgumentException::class
+        }
+
+        it("should add and remove twice in a row") {
+            val (setpad, _) = newKaracter { TestSetPad(it) }
+            val scratchpad = setpad.keep { ScratchPad(it) }
+            val otherpad = scratchpad.keep { ScratchPad(it) }
+            otherpad.keep { ScratchPad(it) }
+
+            setpad.add("J Random Addition", scratchpad).
+                    add("J Other Addition", otherpad).
+                    keep { ScratchPad(it) }
+
+            setpad.remove("J Random Removal", scratchpad).
+                    remove("JU Other Removal", otherpad).
+                    keep { ScratchPad(it) }
+
+            setpad.toSet().isEmpty() `should be` true
         }
     }
 
