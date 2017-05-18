@@ -1,6 +1,6 @@
 package hm.binkley.labs.karacter
 
-class Karacter private constructor(
+open class Karacter private constructor(
         private val cache: MutableMap<String, Any> = mutableMapOf(),
         private val pads: MutableList<MutableEditPad> = mutableListOf())
     : Map<String, Any> by cache {
@@ -76,6 +76,20 @@ class Karacter private constructor(
             val values = karacter.values<T>(key)
             if (values.isEmpty()) defaultValue
             else values.first()
+        }
+    }
+
+    class KaracterMap(next: (Karacter) -> MutableEditPad) : Karacter() {
+        private var current = next(this)
+        val pad: MutableEditPad
+            get() = current
+
+        fun keep(next: (Karacter) -> MutableEditPad) {
+            this.current = current.keep(next)
+        }
+
+        fun discard(next: (Karacter) -> MutableEditPad) {
+            this.current = current.discard(next)
         }
     }
 }
