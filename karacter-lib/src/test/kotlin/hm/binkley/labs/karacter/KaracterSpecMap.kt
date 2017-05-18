@@ -1,6 +1,7 @@
 package hm.binkley.labs.karacter
 
 import hm.binkley.labs.karacter.Karacter.KaracterMap
+import hm.binkley.labs.karacter.Karacter.MutableEditPad
 import org.amshove.kluent.`should be empty`
 import org.amshove.kluent.`should equal`
 import org.jetbrains.spek.api.Spek
@@ -65,6 +66,18 @@ object KaracterMapSpec : Spek({
             map.discard { ScratchPad(it) }
 
             map.`should be empty`()
+        }
+    }
+
+    describe("A character with a custom pad") {
+        class Newby(karacter: Karacter) : MutableEditPad(karacter, "Newby") {
+            val foo = 3
+        }
+
+        val map = KaracterMap { Newby(it) }
+
+        it("should see the custom field") {
+            (map.pad as Newby).foo `should equal` 3
         }
     }
 })
