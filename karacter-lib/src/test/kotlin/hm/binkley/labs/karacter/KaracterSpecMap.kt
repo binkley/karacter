@@ -31,7 +31,7 @@ object KaracterMapSpec : Spek({
         }
     }
 
-    describe("A character with a kept edit pad changes") {
+    describe("A character with a kept pad changes") {
         val map = KaracterMap { ScratchPad(it) }
 
         beforeGroup {
@@ -45,12 +45,26 @@ object KaracterMapSpec : Spek({
             map.`should equal`(mapOf("foo" to "baz"))
         }
 
-        it("should have nothing in the edit pad") {
+        it("should have nothing in the pad") {
             map.pad.`should be empty`()
         }
 
         it("should know all values for a key in the character") {
             map.values<String>("foo") `should equal` listOf("baz", "bar")
+        }
+    }
+
+    describe("A character with a discarded pad") {
+        val map = KaracterMap { ScratchPad(it) }
+
+        beforeGroup {
+            map.pad["foo"] = "bar"
+        }
+
+        it("should use the replacement pad") {
+            map.discard { ScratchPad(it) }
+
+            map.`should be empty`()
         }
     }
 })
