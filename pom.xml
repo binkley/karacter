@@ -35,7 +35,7 @@
         <junit.jupiter.version>5.0.0-M4</junit.jupiter.version>
         <junit.platform.version>1.0.0-M4</junit.platform.version>
         <kluent.version>1.20</kluent.version>
-        <kotlin.version>1.1.4-dev-119</kotlin.version>
+        <kotlin.version>1.2.0</kotlin.version>
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
         <maven-dependency-plugin.version>3.0.0</maven-dependency-plugin.version>
         <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
