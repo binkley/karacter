@@ -4,8 +4,10 @@ import java.lang.Math.abs
 import java.math.BigDecimal
 import java.math.RoundingMode.HALF_UP
 
-abstract class Fraction<F : Fraction<F>>(private val ctor: (Int, Int) -> F,
-        numerator: Int, denominator: Int)
+abstract class Fraction<F : Fraction<F>>(
+        private val ctor: (Int, Int) -> F,
+        numerator: Int,
+        denominator: Int)
     : Number(), Comparable<F> {
     private val numerator: Int
     private val denominator: Int
@@ -18,19 +20,19 @@ abstract class Fraction<F : Fraction<F>>(private val ctor: (Int, Int) -> F,
         this.denominator = abs(denominator / gcm)
     }
 
-    override final fun toByte() = (numerator / denominator).toByte()
+    final override fun toByte() = (numerator / denominator).toByte()
 
-    override final fun toChar() = (numerator / denominator).toChar()
+    final override fun toChar() = (numerator / denominator).toChar()
 
-    override final fun toDouble() = numerator.toDouble() / denominator.toDouble()
+    final override fun toDouble() = numerator.toDouble() / denominator.toDouble()
 
-    override final fun toFloat() = numerator.toFloat() / numerator.toFloat()
+    final override fun toFloat() = numerator.toFloat() / numerator.toFloat()
 
-    override final fun toInt() = numerator / denominator
+    final override fun toInt() = numerator / denominator
 
-    override final fun toLong() = numerator.toLong() / denominator
+    final override fun toLong() = numerator.toLong() / denominator
 
-    override final fun toShort() = (numerator / denominator).toShort()
+    final override fun toShort() = (numerator / denominator).toShort()
 
     fun negate() = ctor.invoke(-numerator, denominator)
 
@@ -40,16 +42,15 @@ abstract class Fraction<F : Fraction<F>>(private val ctor: (Int, Int) -> F,
         return ctor.invoke(numerator, denominator)
     }
 
-    override final fun compareTo(other: F)
-            = Integer.compare(numerator * other.denominator,
+    final override fun compareTo(other: F) = Integer.compare(
+            numerator * other.denominator,
             other.numerator * denominator)
 
-    override fun toString() = BigDecimal.valueOf(numerator.toLong()).
-            divide(BigDecimal.valueOf(denominator.toLong()), 1, HALF_UP).
-            stripTrailingZeros().
-            toString()
+    override fun toString() = BigDecimal.valueOf(numerator.toLong()).divide(
+            BigDecimal.valueOf(denominator.toLong()), 1,
+            HALF_UP).stripTrailingZeros().toString()
 
-    override final fun equals(other: Any?): Boolean {
+    final override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
         other as Fraction<*>
@@ -58,11 +59,11 @@ abstract class Fraction<F : Fraction<F>>(private val ctor: (Int, Int) -> F,
         return true
     }
 
-    override final fun hashCode(): Int = 31 * numerator + denominator
+    final override fun hashCode(): Int = 31 * numerator + denominator
 
     companion object {
-        private tailrec fun gcm(numerator: Int, denominator: Int): Int
-                = when (denominator) {
+        private tailrec fun gcm(numerator: Int,
+                denominator: Int): Int = when (denominator) {
             0 -> numerator
             else -> gcm(denominator, numerator % denominator)
         }

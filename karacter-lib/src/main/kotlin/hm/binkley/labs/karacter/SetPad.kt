@@ -13,7 +13,7 @@ open class SetPad<T : MutableEditPad>(
      * @see [SetPad.toSet]
      * @see [MutableEditPad.toMap]
      */
-    override final val size
+    final override val size
         get() = throw UnsupportedOperationException(
                 "Use toMap().size or toSet().size")
 
@@ -22,7 +22,7 @@ open class SetPad<T : MutableEditPad>(
      * @see [SetPad.toSet]
      * @see [MutableEditPad.toMap]
      */
-    override final fun isEmpty() = throw UnsupportedOperationException(
+    final override fun isEmpty() = throw UnsupportedOperationException(
             "Use toMap().isEmpty() or toSet().isEmpty()")
 
     /** @todo When compiler supports lower bounds, use immutable base */
